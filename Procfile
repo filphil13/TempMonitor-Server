@@ -1,1 +1,1 @@
-web: Builds/server.exes
+web: Builds/server.exe
