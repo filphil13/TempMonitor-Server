@@ -1,4 +1,4 @@
-module github.com/filphil13/TempScans
+module github.com/filphil13/TempMonitor-Server
 
 go 1.19
 

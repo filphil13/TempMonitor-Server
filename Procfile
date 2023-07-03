@@ -1,1 +1,1 @@
-web: server.exe
+web: TempMonitor-Server.exe
