@@ -224,7 +224,7 @@ func main() {
 
 	router.DELETE("/sensor/:name", DeleteSensor)
 
-	router.Run("192.168.2.11:8080")
+	router.Run()
 }
 
 //
