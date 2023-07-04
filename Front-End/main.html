@@ -17,11 +17,11 @@
 
               	function update(){
 
-                  var json = $.getJSON("http://192.168.2.11:8080/sensor/all", function( data ){ 
+                  var json = $.getJSON("https://temp-monitor-a38f32c02c5e.herokuapp.com/sensor/all", function( data ){ 
                     console.log(data)
                   })
 
-                	var json = $.getJSON("http://192.168.2.11:8080/sensor/recent", function( data ){ 
+                	var json = $.getJSON("https://temp-monitor-a38f32c02c5e.herokuapp.com/sensor/recent", function( data ){ 
 						$("tbody").empty()
 
             console.log(data)
