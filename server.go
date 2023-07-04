@@ -10,6 +10,7 @@ import (
 )
 
 type SensorScan struct {
+	name 		string	`json: "name"`
 	temperature float32 `json: "temperature"`
 	humidity    float32 `json: "humidity"`
 	time        int     `json: "time"`
@@ -135,14 +136,13 @@ func DeleteSensor(c *gin.Context) {
 
 // ADD
 func AddToSensorLog(c *gin.Context) {
-	name := c.Param("name")
 	var newScan SensorScan
 	if err := c.BindJSON(&newScan); err != nil {
 		return
 	}
-	var sensorIndex, sensorExist = FindSensorName(name)
+	var sensorIndex, sensorExist = FindSensorName(newScan.name)
 	if !sensorExist {
-		AddToSensorList(name, c.ClientIP())
+		AddToSensorList(newScan.name, c.ClientIP())
 	}
 
 
