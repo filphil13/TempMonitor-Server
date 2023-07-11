@@ -22,11 +22,13 @@ function getRecentData(){
                 .then(json => setResults(json))
                 .catch((error) => console.error(error))
                 .finally(()=>setLoading(false));
+
+                SensorList = data;
             }, 3000);
-            
+
 
         }, [])
-    SensorList = data;
+    
 
         
 }
