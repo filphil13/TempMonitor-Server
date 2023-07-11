@@ -27,8 +27,23 @@ type Sensor struct {
 //
 //
 
-var sensorList []Sensor
-var mostRecentScans []TempScan
+var sensorList[]Sensor
+
+
+var mostRecentScans = []TempScan{
+	TempScan{
+		name: 			"test1",
+		temperature: 	0.0,
+		humidity:		0.0,
+		time:			0,
+	},	
+	TempScan{
+		name : 			"test2",
+		temperature: 	0.0,
+		humidity:		0.0,
+		time:			0,
+	},	
+}
 
 //
 //
