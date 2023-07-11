@@ -16,7 +16,7 @@
 				$("#refreshButton").click(update);
 
               	function update(){
-
+                  //remove after unless doing a graph like component
                   var json = $.getJSON("http://temp-monitor-a38f32c02c5e.herokuapp.com/sensor/all", function( data ){ 
                     console.log(data)
                   })

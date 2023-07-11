@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type SensorScan struct {
+type TempScan struct {
 	name 		string	`json: "name"`
 	temperature float32 `json: "temperature"`
 	humidity    float32 `json: "humidity"`
@@ -19,7 +19,7 @@ type SensorScan struct {
 type Sensor struct {
 	name    string       `json: "name"`
 	address string       `json: "address"`
-	log     []SensorScan `json: "log"`
+	log     []TempScan `json: "log"`
 }
 
 //Global Variables
@@ -27,7 +27,7 @@ type Sensor struct {
 //
 
 var sensorList []Sensor
-var mostRecentScans []Sensor
+var mostRecentScans []TempScan
 
 //
 //
@@ -95,13 +95,16 @@ func GetHome(c *gin.Context) {
 }
 
 // GET ALL TEMPERATURE SCANS FROM ALL SENSORS STORED IN DATABASE("/sensor/all")
-func GetAllSensorScans(c *gin.Context) {
+func GetAllTempScans(c *gin.Context) {
 	c.JSON(200, sensorList)
 }
 
 // GET MOST RECENT TEMPERATURE SCANS FROM ALL SENSORS("/sensor/recent")
 func GetRecentScan(c *gin.Context) {
-	c.JSON(200, mostRecentScans)
+	if len(sensorList) > 0{
+		c.JSON(200, mostRecentScans)
+	}
+	return
 }
 
 // GET SINGLE SENSOR LOG("/sensor/:name")
@@ -112,7 +115,7 @@ func GetSensorLog(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, sensorList[i])
+	c.JSON(200, sensorList[i].log)
 }
 
 // DELETE SINGLE SENSOR("/sensor/:name")
@@ -136,7 +139,7 @@ func DeleteSensor(c *gin.Context) {
 
 // ADD
 func AddToSensorLog(c *gin.Context) {
-	var newScan SensorScan
+	var newScan TempScan
 	if err := c.BindJSON(&newScan); err != nil {
 		return
 	}
@@ -185,15 +188,12 @@ func RemoveSensor(name string) bool {
 
 // UPDATE
 func UpdateRecentScan() {
-	var newRecentScan []Sensor
+	var newRecentScan []TempScan
 
 	for _, sensor := range sensorList {
-		var tempSensor = Sensor{
-			name:    sensor.name,
-			address: sensor.address,
-			log:     []SensorScan{sensor.log[0]}}
+		tempScan := sensor.log[len(sensor.log)-1]
 
-		newRecentScan = append(newRecentScan, tempSensor)
+		newRecentScan = append(newRecentScan, tempScan)
 	}
 
 	mostRecentScans = newRecentScan
@@ -209,7 +209,7 @@ func UpdateRecentScan() {
 func main() {
 
 	router := gin.Default()
-	router.LoadHTMLGlob("Front-End/*.html")
+	router.LoadHTMLGlob("Front-End/Temperature-Monitor/index.html")
 
 	//SENSOR ENDPOINTS
 	router.POST("/updateSensor", AddToSensorLog)
@@ -218,7 +218,7 @@ func main() {
 	router.GET("/home", GetHome)
 	router.GET("/", GetHome)
 
-	router.GET("/sensor/all", GetAllSensorScans)
+	router.GET("/sensor/all", GetAllTempScans)
 	router.GET("/sensor/recent", GetRecentScan)
 	router.GET("/sensor/:name", GetSensorLog)
 
