@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { useState, useEffect } from 'react';
 
-const API_URL = "https://temp-monitor-a38f32c02c5e.herokuapp.com/recent"
+const API_URL = "https://temp-monitor-a38f32c02c5e.herokuapp.com/sensor/recent"
 
 var SensorList = [
     {"name":"test","temperature":0,"humidity":0,"time":0},
