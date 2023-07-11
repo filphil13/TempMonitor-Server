@@ -210,7 +210,7 @@ func UpdateRecentScan() {
 func main() {
 
 	router := gin.Default()
-	router.Use(static.Serve("/", static.LocalFile(".Front-End/Temperature-Monitor/dist", true)))
+	router.Use(static.Serve("/", static.LocalFile("/Front-End/Temperature-Monitor/dist", true)))
 
 	//SENSOR ENDPOINTS
 	router.POST("/updateSensor", AddToSensorLog)
