@@ -53,6 +53,7 @@ function updateTable(){
 }
 
 function TempTable() {
+    getRecentData()
     updateTable()
 	return(	
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
