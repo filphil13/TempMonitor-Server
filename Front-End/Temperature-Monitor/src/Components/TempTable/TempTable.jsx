@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 
 const API_URL = "https://temp-monitor-a38f32c02c5e.herokuapp.com/sensor/recent"
 
@@ -17,8 +17,12 @@ function TempTable() {
     setInterval(updateTempTable, 3000);
 
     function updateTempTable(){
-        getRecentData()
-        CreateTempBlocks()
+        useEffect(()=>{
+            getRecentData()
+            CreateTempBlocks()
+            }
+        )
+        
     }
 
 
@@ -46,17 +50,23 @@ function TempTable() {
     
     }
 
-    async function getRecentData(){
-    
-        try{
-            const response = await fetch(API_URL);
-            const responseJson = await response.json();
-            console.log("GET RQST RESPONSE:\n" + responseJson);
-            setSensorList(responseJson);
+    function getRecentData(){
+        fetch(API_URL)
+        .then(async response => {
+            const data = await response.json();
+
+            // check for error response
+            if (!response.ok) {
+                // get error message from body or default to response statusText
+                const error = (data && data.message) || response.statusText;
+                return Promise.reject(error);
             }
-            catch(e){
-                console.log(e);
-            }
+
+            this.setSensorList(data)
+        })
+        .catch(error => {
+            console.error('There was an error!', error);
+        });
             
     }
 
