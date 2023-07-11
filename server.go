@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 )
 
@@ -209,7 +210,7 @@ func UpdateRecentScan() {
 func main() {
 
 	router := gin.Default()
-	router.LoadHTMLGlob("Front-End/Temperature-Monitor/index.html")
+	router.Use(static.Serve("/", static.LocalFile("Front-End/Temperature-Monitor", true)))
 
 	//SENSOR ENDPOINTS
 	router.POST("/updateSensor", AddToSensorLog)
