@@ -92,7 +92,7 @@ func LogTempData() {
 
 // GET HOME PAGE("/home")
 func GetHome(c *gin.Context) {
-	c.HTML(200, "main.html", nil)
+	c.HTML(200, "index.html", nil)
 }
 
 // GET ALL TEMPERATURE SCANS FROM ALL SENSORS STORED IN DATABASE("/sensor/all")
