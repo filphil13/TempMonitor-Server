@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { useState, useEffect } from 'react';
 
-const API_URL = "http://temp-monitor-a38f32c02c5e.herokuapp.com/recent"
+const API_URL = "https://temp-monitor-a38f32c02c5e.herokuapp.com/recent"
 
 var SensorList = [
     {"name":"test","temperature":0,"humidity":0,"time":0},
@@ -16,11 +16,14 @@ function getRecentData(){
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-            fetch(API_URL)
-            .then((response) => response.json())
-            .then(json => setResults(json))
-            .catch((error) => console.error(error))
-            .finally(()=>setLoading(false));
+            const interval = setInterval(() => {
+                fetch(API_URL)
+                .then((response) => response.json())
+                .then(json => setResults(json))
+                .catch((error) => console.error(error))
+                .finally(()=>setLoading(false));
+            }, 3000);
+            
 
         }, [])
     SensorList = data;
