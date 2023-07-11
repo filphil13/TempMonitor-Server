@@ -1,8 +1,10 @@
 import './App.css'
-import Navbar from './Components/Navbar'
-import TempTable from './Components/TempTable'
+import Navbar from './Components/Navbar/Navbar'
+import TempTable from './Components/TempTable/TempTable'
+
 
 function App() {
+	
 	return (
 		<div>
 			<Navbar />
