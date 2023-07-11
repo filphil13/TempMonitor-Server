@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -117,9 +118,13 @@ func GetAllTempScans(c *gin.Context) {
 
 // GET MOST RECENT TEMPERATURE SCANS FROM ALL SENSORS("/sensor/recent")
 func GetRecentScan(c *gin.Context) {
-	if len(sensorList) > 0{
-		c.JSON(200, mostRecentScans)
-	}
+
+	data, err := json.Marshal(&mostRecentScans)
+	if err != nil {
+        fmt.Println(err)
+        return
+    }
+	c.JSON(200, data)
 	return
 }
 
