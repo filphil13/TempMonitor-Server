@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/contrib/static"
 )
 
 type TempScan struct {
@@ -210,7 +209,7 @@ func UpdateRecentScan() {
 func main() {
 
 	router := gin.Default()
-	router.Use(static.Serve("/", static.LocalFile("Front-End/Temperature-Monitor"))
+	router.LoadHTMLGlob("Front-End/Temperature-Monitor/index.html")
 
 	//SENSOR ENDPOINTS
 	router.POST("/updateSensor", AddToSensorLog)
