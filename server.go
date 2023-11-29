@@ -174,7 +174,7 @@ func main() {
 	router.Use(static.Serve("/", static.LocalFile("./Front-End/Temperature-Monitor/dist", true)))
 
 	//SENSOR ENDPOINTS
-	router.POST("/api/:name/update", AddToSensorLog)
+	router.POST("/api/update/:name", AddToSensorLog)
 
 	//FRONT-END ENDPOINTS
 	router.GET("/home", GetHome)
@@ -182,10 +182,10 @@ func main() {
 
 	router.GET("/api/all", GetAllTempScans)
 	router.GET("/api/names", GetSensorNames)
-	router.GET("/api/:name/all", GetSensorLog)
+	router.GET("/api/all/:name", GetSensorLog)
 	router.GET("/api/:name/recent", nil)
 
-	router.DELETE("/sensor/:name", DeleteSensor)
+	router.DELETE("/api/:name", DeleteSensor)
 
 	router.Run()
 }
