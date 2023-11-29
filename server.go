@@ -87,7 +87,6 @@ func GetRecentScan(c *gin.Context) {
 		return
 	}
 	c.JSON(200, sensorList[i].Log[len(sensorList[i].Log)-1])
-	return
 }
 
 // GET SINGLE SENSOR LOG("/sensor/:name")
@@ -112,7 +111,7 @@ func GetSensorNames(c *gin.Context) {
 
 // ADD
 func AddToSensorLog(c *gin.Context) {
-	name := c.Param("name")
+	name := c.Query("name")
 
 	var newTempScan TempScan
 
@@ -175,7 +174,7 @@ func main() {
 	router.Use(static.Serve("/", static.LocalFile("./Front-End/Temperature-Monitor/dist", true)))
 
 	//SENSOR ENDPOINTS
-	router.POST("/api/update/:name", AddToSensorLog)
+	router.POST("/api/update", AddToSensorLog)
 
 	//FRONT-END ENDPOINTS
 	router.GET("/home", GetHome)
