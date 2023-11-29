@@ -127,6 +127,7 @@ func AddToSensorLog(c *gin.Context) {
 			i, _ = FindSensorName(name)
 		}
 		sensorList[i].Log = append(sensorList[i].Log, newTempScan)
+		c.JSON(200, newTempScan)
 	}
 }
 
@@ -183,10 +184,9 @@ func main() {
 	router.GET("/api/all", GetAllTempScans)
 	router.GET("/api/names", GetSensorNames)
 	router.GET("/api/all/:name", GetSensorLog)
-	router.GET("/api/:name/recent", nil)
+	router.GET("/api/recent/:name", nil)
 
 	router.DELETE("/api/:name", DeleteSensor)
-
 	router.Run()
 }
 
