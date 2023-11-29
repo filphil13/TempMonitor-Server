@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -11,68 +10,31 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type TempScan struct {
-	name 		string	`json: "name"`
-	temperature float32 `json: "temperature"`
-	humidity    float32 `json: "humidity"`
-	time        int     `json: "time"`
-}
+// Global Variables
+var sensorList []Sensor
 
 type Sensor struct {
-	name    string       `json: "name"`
-	address string       `json: "address"`
-	log     []TempScan `json: "log"`
+	Name    string     `json: "name"`
+	Address string     `json: "address"`
+	Log     []TempScan `json: "log"`
 }
 
-//Global Variables
-//
-//
-
-var sensorList[]Sensor
-
-
-var mostRecentScans = []TempScan{
-	TempScan{
-		name: 			"test1",
-		temperature: 	0.0,
-		humidity:		0.0,
-		time:			0,
-	},	
-	TempScan{
-		name : 			"test2",
-		temperature: 	0.0,
-		humidity:		0.0,
-		time:			0,
-	},	
+type TempScan struct {
+	Temperature float32 `json: "temperature"`
+	Humidity    float32 `json: "humidity"`
+	Time        int     `json: "time"`
 }
 
 //
 //
 //
 
-// Authentication
-func InitSensor(c *gin.Context) {
-	var _, addressExist = FindSensorName(c.ClientIP())
-
-	if addressExist {
-		//potential security blocks here for unknown addresses
-		//for now will remain fully unblocked
-		c.JSON(http.StatusOK, nil)
-
-	} else {
-		var newSensor Sensor
-		c.BindJSON(&newSensor)
-		newSensor.address = c.ClientIP()
-		AddToSensorList(newSensor.name, newSensor.address)
-		c.JSON(http.StatusOK, nil)
-	}
-}
-
-func AddToSensorList(newName, newAddress string) {
+// CREATE
+func createSensor(name, address string) {
 	newSensor := Sensor{
-		name:    newName,
-		address: newAddress,
-		log:     nil}
+		Name:    name,
+		Address: address,
+		Log:     nil}
 
 	sensorList = append(sensorList, newSensor)
 }
@@ -108,7 +70,7 @@ func LogTempData() {
 
 // GET HOME PAGE("/home")
 func GetHome(c *gin.Context) {
-	c.JSON(200,nil)
+	c.JSON(200, nil)
 }
 
 // GET ALL TEMPERATURE SCANS FROM ALL SENSORS STORED IN DATABASE("/sensor/all")
@@ -118,13 +80,13 @@ func GetAllTempScans(c *gin.Context) {
 
 // GET MOST RECENT TEMPERATURE SCANS FROM ALL SENSORS("/sensor/recent")
 func GetRecentScan(c *gin.Context) {
+	name := c.Param("name")
 
-	data, err := json.Marshal(&mostRecentScans)
-	if err != nil {
-        fmt.Println(err)
-        return
-    }
-	c.JSON(200, data)
+	i, sensorExists := FindSensorName(name)
+	if !sensorExists {
+		return
+	}
+	c.JSON(200, sensorList[i].Log[len(sensorList[i].Log)-1])
 	return
 }
 
@@ -136,52 +98,33 @@ func GetSensorLog(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, sensorList[i].log)
+	c.JSON(200, sensorList[i].Log)
 }
-
-// DELETE SINGLE SENSOR("/sensor/:name")
-func DeleteSensor(c *gin.Context) {
-	name := c.Param("name")
-	if !RemoveSensor(name) {
-		return
-	}
-	c.String(http.StatusOK, "", name)
-}
-
-//
-//
-//
-//
-//
-
-//DATABASE HELPERS
-//
-//
 
 // ADD
 func AddToSensorLog(c *gin.Context) {
-	var newScan TempScan
-	if err := c.BindJSON(&newScan); err != nil {
+	name := c.Param("name")
+
+	var newTempScan TempScan
+
+	if err := c.ShouldBindJSON(&newTempScan); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
+	} else {
+		newTempScan.Time = int(time.Now().Unix())
+		i, sensorExists := FindSensorName(name)
+		if !sensorExists {
+			createSensor(name, c.ClientIP())
+			i, _ = FindSensorName(name)
+		}
+		sensorList[i].Log = append(sensorList[i].Log, newTempScan)
 	}
-	var sensorIndex, sensorExist = FindSensorName(newScan.name)
-	if !sensorExist {
-		AddToSensorList(newScan.name, c.ClientIP())
-	}
-
-
-	newScan.time = int(time.Now().Unix())
-	sensorList[sensorIndex].log = append(sensorList[sensorIndex].log, newScan)
-	//logTempData()
-
-	UpdateRecentScan()
-	c.JSON(http.StatusCreated, newScan)
 }
 
 // FIND/GET
 func FindSensorName(name string) (int, bool) {
 	for i, sensor := range sensorList {
-		if sensor.name == name {
+		if sensor.Name == name {
 			return i, true
 		}
 	}
@@ -190,7 +133,7 @@ func FindSensorName(name string) (int, bool) {
 
 func FindSensorAddr(addr string) (int, bool) {
 	for i, sensor := range sensorList {
-		if sensor.address == addr {
+		if sensor.Address == addr {
 			return i, true
 		}
 	}
@@ -198,26 +141,15 @@ func FindSensorAddr(addr string) (int, bool) {
 }
 
 // DELETE
-func RemoveSensor(name string) bool {
+func DeleteSensor(c *gin.Context) {
+	name := c.Param("name")
 	i, sensorExists := FindSensorName(name)
 	if !(sensorExists) {
-		return false
+		return
 	}
 	sensorList = append(sensorList[:i], sensorList[i+1:]...)
-	return true
-}
+	c.String(http.StatusOK, "", name)
 
-// UPDATE
-func UpdateRecentScan() {
-	var newRecentScan []TempScan
-
-	for _, sensor := range sensorList {
-		tempScan := sensor.log[len(sensor.log)-1]
-
-		newRecentScan = append(newRecentScan, tempScan)
-	}
-
-	mostRecentScans = newRecentScan
 }
 
 //
@@ -233,15 +165,16 @@ func main() {
 	router.Use(static.Serve("/", static.LocalFile("./Front-End/Temperature-Monitor/dist", true)))
 
 	//SENSOR ENDPOINTS
-	router.POST("/updateSensor", AddToSensorLog)
+	router.POST("/api/:name/update", AddToSensorLog)
 
 	//FRONT-END ENDPOINTS
 	router.GET("/home", GetHome)
 	router.GET("/", GetHome)
 
-	router.GET("/sensor/all", GetAllTempScans)
-	router.GET("/sensor/recent", GetRecentScan)
-	router.GET("/sensor/:name", GetSensorLog)
+	router.GET("/api/all", GetAllTempScans)
+
+	router.GET("/api/:name/all", GetSensorLog)
+	router.GET("/api/:name/recent", nil)
 
 	router.DELETE("/sensor/:name", DeleteSensor)
 

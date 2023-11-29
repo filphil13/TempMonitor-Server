@@ -14,15 +14,15 @@ var TABLEBODYHTML;
 
 function TempTable() {
     const [SensorList, setSensorList] = useState(TestSensorList);
-    setInterval(updateTempTable, 3000);
+    useEffect(()=> {
+        getRecentData()
+        CreateTempBlocks()
+        setInterval(updateTempTable, 3000);
+    })
 
     function updateTempTable(){
-        useEffect(()=>{
             getRecentData()
             CreateTempBlocks()
-            }
-        )
-        
     }
 
 
