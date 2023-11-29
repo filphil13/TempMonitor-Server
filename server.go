@@ -92,6 +92,11 @@ func GetRecentScan(c *gin.Context) {
 // GET SINGLE SENSOR LOG("/sensor/:name")
 func GetSensorLog(c *gin.Context) {
 	name := c.Query("name")
+	if name == "" {
+		GetAllTempScans(c)
+		return
+	}
+
 	i, sensorExists := FindSensorName(name)
 	if !sensorExists {
 		return
@@ -180,7 +185,6 @@ func main() {
 	router.GET("/home", GetHome)
 	router.GET("/", GetHome)
 
-	router.GET("/api/all", GetAllTempScans)
 	router.GET("/api/names", GetSensorNames)
 	router.GET("/api/all", GetSensorLog)
 	router.GET("/api/recent", nil)
