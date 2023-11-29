@@ -80,7 +80,7 @@ func GetAllTempScans(c *gin.Context) {
 
 // GET MOST RECENT TEMPERATURE SCANS FROM ALL SENSORS("/sensor/recent")
 func GetRecentScan(c *gin.Context) {
-	name := c.Param("name")
+	name := c.Query("name")
 
 	i, sensorExists := FindSensorName(name)
 	if !sensorExists {
@@ -151,7 +151,7 @@ func FindSensorAddr(addr string) (int, bool) {
 
 // DELETE
 func DeleteSensor(c *gin.Context) {
-	name := c.Param("name")
+	name := c.Query("name")
 	i, sensorExists := FindSensorName(name)
 	if !(sensorExists) {
 		return
