@@ -101,6 +101,15 @@ func GetSensorLog(c *gin.Context) {
 	c.JSON(200, sensorList[i].Log)
 }
 
+// GET SENSOR NAMES
+func GetSensorNames(c *gin.Context) {
+	var sensorNames []string
+	for _, sensor := range sensorList {
+		sensorNames = append(sensorNames, sensor.Name)
+	}
+	c.JSON(200, sensorNames)
+}
+
 // ADD
 func AddToSensorLog(c *gin.Context) {
 	name := c.Param("name")
@@ -172,7 +181,7 @@ func main() {
 	router.GET("/", GetHome)
 
 	router.GET("/api/all", GetAllTempScans)
-
+	router.GET("/api/names", GetSensorNames)
 	router.GET("/api/:name/all", GetSensorLog)
 	router.GET("/api/:name/recent", nil)
 

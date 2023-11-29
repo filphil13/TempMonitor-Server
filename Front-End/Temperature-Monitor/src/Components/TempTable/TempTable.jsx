@@ -4,11 +4,7 @@ import {useState, useEffect} from 'react';
 const API_URL = "https://temp-monitor-a38f32c02c5e.herokuapp.com/sensor/recent"
 
 
-var TestSensorList = [
-    {"name":"test","temperature":0,"humidity":0,"time":0},
-    {"name":"test","temperature":0,"humidity":0,"time":0},
-    {"name":"test","temperature":0,"humidity":0,"time":0},
-];
+var SensorList = []
 
 var TABLEBODYHTML;
 
