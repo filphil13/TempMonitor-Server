@@ -14,15 +14,15 @@ import (
 var sensorList []Sensor
 
 type Sensor struct {
-	Name    string     `json: "name"`
-	Address string     `json: "address"`
-	Log     []TempScan `json: "log"`
+	Name    string     `json: "Name"`
+	Address string     `json: "Address"`
+	Log     []TempScan `json: "Log"`
 }
 
 type TempScan struct {
-	Temperature float32 `json: "temperature"`
-	Humidity    float32 `json: "humidity"`
-	Time        int     `json: "time"`
+	Temperature float32 `json: "Temperature"`
+	Humidity    float32 `json: "Humidity"`
+	Time        int     `json: "Time"`
 }
 
 //
