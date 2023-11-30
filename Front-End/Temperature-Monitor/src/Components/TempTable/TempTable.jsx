@@ -13,7 +13,7 @@ function TempTable() {
     useEffect(()=> {
         getRecentData()
         CreateTempBlocks()
-        setInterval(getRecentData, 15000);
+        setInterval(getRecentData, 30000);
     })
 
     function CreateTempBlocks(data){
