@@ -207,7 +207,6 @@ func main() {
 
 	router.DELETE("/api/:name", DeleteSensor)
 	log.Fatal(autotls.Run(router))
-	router.Run()
 }
 
 //
