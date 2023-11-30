@@ -3,11 +3,9 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"time"
 
-	"github.com/gin-gonic/autotls"
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 )
@@ -206,7 +204,7 @@ func main() {
 	router.GET("/api/recent", GetRecentScan)
 
 	router.DELETE("/api/:name", DeleteSensor)
-	log.Fatal(autotls.Run(router, "temp-monitor-a38f32c02c5e.herokuapp.com"))
+	router.Run()
 }
 
 //
