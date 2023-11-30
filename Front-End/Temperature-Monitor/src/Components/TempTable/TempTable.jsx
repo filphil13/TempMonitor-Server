@@ -61,7 +61,7 @@ function TempTable() {
             }
             console.log(names)
             names.forEach(name  => {
-                fetch(API_URL+ "/api/recent/"+ name)
+                fetch(API_URL+ "/api/recent/?name="+ name)
                 .then(async response => {
                     const data = await response.json();
 
