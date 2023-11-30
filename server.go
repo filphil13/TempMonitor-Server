@@ -25,6 +25,13 @@ type TempScan struct {
 	Time        int     `json: "Time"`
 }
 
+type RecentScan struct {
+	Name        string  `json: "Name"`
+	Temperature float32 `json: "Temperature"`
+	Humidity    float32 `json: "Humidity"`
+	Time        int     `json: "Time"`
+}
+
 //
 //
 //
@@ -86,7 +93,13 @@ func GetRecentScan(c *gin.Context) {
 	if !sensorExists {
 		return
 	}
-	c.JSON(200, sensorList[i].Log[len(sensorList[i].Log)-1])
+
+	c.JSON(200, RecentScan{
+		Name:        name,
+		Temperature: sensorList[i].Log[len(sensorList[i].Log)-1].Temperature,
+		Humidity:    sensorList[i].Log[len(sensorList[i].Log)-1].Humidity,
+		Time:        sensorList[i].Log[len(sensorList[i].Log)-1].Time,
+	})
 }
 
 // GET SINGLE SENSOR LOG("/sensor/:name")
@@ -187,7 +200,7 @@ func main() {
 
 	router.GET("/api/names", GetSensorNames)
 	router.GET("/api/all", GetSensorLog)
-	router.GET("/api/recent", nil)
+	router.GET("/api/recent", GetRecentScan)
 
 	router.DELETE("/api/:name", DeleteSensor)
 	router.Run()

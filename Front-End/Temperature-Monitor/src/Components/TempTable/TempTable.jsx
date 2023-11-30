@@ -1,7 +1,8 @@
+import { data } from 'autoprefixer';
 import React, { Component } from 'react';
 import {useState, useEffect} from 'react';
 
-const API_URL = "https://temp-monitor-a38f32c02c5e.herokuapp.com/sensor/recent"
+const API_URL = "https://temp-monitor-a38f32c02c5e.herokuapp.com"
 
 
 var SensorList = []
@@ -9,7 +10,7 @@ var SensorList = []
 var TABLEBODYHTML;
 
 function TempTable() {
-    const [SensorList, setSensorList] = useState(TestSensorList);
+    const [SensorList, setSensorList] = useState(SensorList);
     useEffect(()=> {
         getRecentData()
         CreateTempBlocks()
@@ -29,16 +30,16 @@ function TempTable() {
             TABLEBODYHTML = TempTable.map((sensor) =>(
                 <tr key={sensor.name} class="border-b border-gray-200 dark:border-gray-700">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
-                        {sensor.name}
+                        {sensor.Name}
                     </th>
                     <td class="px-6 py-4">
-                        {String(sensor.temperature)}
+                        {String(sensor.Temperature)}
                     </td>
                     <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                        {String(sensor.humidity)}
+                        {String(sensor.Humidity)}
                     </td>
                     <td class="px-6 py-4">
-                        {String(sensor.time)} seconds ago
+                        {String(sensor.Time)} seconds ago
                     </td>
                 </tr>
             ));
@@ -47,26 +48,38 @@ function TempTable() {
     }
 
     function getRecentData(){
-        fetch(API_URL)
+
+        const recentSensorData = [];
+        fetch(API_URL+ "/api/names")
         .then(async response => {
-            const data = await response.json();
+            const names = await response.json();
 
             // check for error response
             if (!response.ok) {
                 // get error message from body or default to response statusText
-                const error = (data && data.message) || response.statusText;
+                const error = (names && names.message) || response.statusText;
                 return Promise.reject(error);
             }
+            names.forEach(name  => {
+                fetch(API_URL+ "/api/recent/"+ name)
+                .then(async response => {
+                    const data = await response.json();
 
-            this.setSensorList(data)
-        })
-        .catch(error => {
-            console.error('There was an error!', error);
+                    // check for error response
+                    if (!response.ok) {
+                        // get error message from body or default to response statusText
+                        const error = (data && data.message) || response.statusText;
+                        return Promise.reject(error);
+                    }
+                    recentSensorData.push(data)
+                });
+            })
+            setSensorList(recentSensorData)
+            .catch(error => {
+                console.error('There was an error!', error);
+            });
         });
-            
     }
-
-
 
 	return(	
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
