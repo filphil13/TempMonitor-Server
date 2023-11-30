@@ -49,7 +49,7 @@ function TempTable() {
     function getRecentData(){
 
         const recentSensorData = [];
-        fetch(API_URL+ "/api/names")
+        fetch(API_URL + "/api/names")
         .then(async response => {
             const names = await response.json();
 
@@ -59,6 +59,7 @@ function TempTable() {
                 const error = (names && names.message) || response.statusText;
                 return Promise.reject(error);
             }
+            console.log(names)
             names.forEach(name  => {
                 fetch(API_URL+ "/api/recent/"+ name)
                 .then(async response => {
