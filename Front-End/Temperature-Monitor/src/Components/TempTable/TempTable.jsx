@@ -8,19 +8,18 @@ const API_URL = "https://temp-monitor-a38f32c02c5e.herokuapp.com"
 var TABLEBODYHTML;
 
 function TempTable() {
-
+    
     const [SensorList, setSensorList] = useState([]);
+    CreateTempBlocks()
+    
     useEffect(()=> {
-        getRecentData()
-        CreateTempBlocks()
         setInterval(getRecentData, 30000);
     })
 
     function CreateTempBlocks(data){
         TABLEBODYHTML = <></>
-        var TempTable = SensorList
         if (SensorList.length > 0){
-            TABLEBODYHTML = TempTable.map((sensor) =>(
+            TABLEBODYHTML = SensorList.map((sensor) =>(
                 <tr key={sensor.name} class="border-b border-gray-200 dark:border-gray-700">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
                         {sensor.Name}
@@ -52,6 +51,9 @@ function TempTable() {
                 // get error message from body or default to response statusText
                 const error = (names && names.message) || response.statusText;
                 return Promise.reject(error);
+            }
+            else if(names==[]){
+                return 
             }
             console.log(names)
             names.forEach(name  => {
