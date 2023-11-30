@@ -71,10 +71,7 @@ function TempTable() {
                     recentSensorData.push(data)
                 });
             })
-            setSensorList((SensorList) => recentSensorData)
-            .catch(error => {
-                console.error('There was an error!', error);
-            });
+            setSensorList((SensorList) => recentSensorData);
         });
     }
 
