@@ -9,7 +9,7 @@ var TABLEBODYHTML;
 
 function TempTable() {
 
-    const [SensorList, setSensorList] = useState(SensorList);
+    const [SensorList, setSensorList] = useState([]);
     useEffect(()=> {
         getRecentData()
         CreateTempBlocks()
@@ -75,7 +75,7 @@ function TempTable() {
                     recentSensorData.push(data)
                 });
             })
-            setSensorList(recentSensorData)
+            setSensorList((SensorList) => recentSensorData)
             .catch(error => {
                 console.error('There was an error!', error);
             });
