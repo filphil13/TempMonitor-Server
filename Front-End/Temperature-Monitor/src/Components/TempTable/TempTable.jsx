@@ -13,14 +13,8 @@ function TempTable() {
     useEffect(()=> {
         getRecentData()
         CreateTempBlocks()
-        setInterval(updateTempTable, 15000);
+        setInterval(getRecentData, 15000);
     })
-
-    function updateTempTable(){
-            getRecentData()
-            CreateTempBlocks()
-    }
-
 
     function CreateTempBlocks(data){
         TABLEBODYHTML = <></>
