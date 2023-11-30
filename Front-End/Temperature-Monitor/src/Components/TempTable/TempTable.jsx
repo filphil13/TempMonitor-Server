@@ -9,7 +9,7 @@ var TABLEBODYHTML;
 
 function TempTable() {
 
-    const [SensorList, setSensorList] = useState([]);
+    const [SensorList, setSensorList] = useState(SensorList);
     useEffect(()=> {
         getRecentData()
         CreateTempBlocks()
