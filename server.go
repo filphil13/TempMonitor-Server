@@ -206,7 +206,7 @@ func main() {
 	router.GET("/api/recent", GetRecentScan)
 
 	router.DELETE("/api/:name", DeleteSensor)
-	log.Fatal(autotls.Run(router))
+	log.Fatal(autotls.Run(router, "temp-monitor-a38f32c02c5e.herokuapp.com"))
 }
 
 //
