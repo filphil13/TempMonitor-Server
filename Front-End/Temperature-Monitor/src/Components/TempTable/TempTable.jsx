@@ -1,20 +1,19 @@
-import { data } from 'autoprefixer';
 import React, { Component } from 'react';
 import {useState, useEffect} from 'react';
 
 const API_URL = "https://temp-monitor-a38f32c02c5e.herokuapp.com"
 
 
-var SensorList = []
 
 var TABLEBODYHTML;
 
 function TempTable() {
-    const [SensorList, setSensorList] = useState(SensorList);
+
+    const [SensorList, setSensorList] = useState([]);
     useEffect(()=> {
         getRecentData()
         CreateTempBlocks()
-        setInterval(updateTempTable, 3000);
+        setInterval(updateTempTable, 15000);
     })
 
     function updateTempTable(){
@@ -74,7 +73,7 @@ function TempTable() {
                     recentSensorData.push(data)
                 });
             })
-            setSensorList(recentSensorData)
+            this.setSensorList(recentSensorData)
             .catch(error => {
                 console.error('There was an error!', error);
             });
