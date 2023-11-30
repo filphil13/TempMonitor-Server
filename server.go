@@ -3,9 +3,11 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"time"
 
+	"github.com/gin-gonic/autotls"
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 )
@@ -189,6 +191,7 @@ func DeleteSensor(c *gin.Context) {
 func main() {
 
 	router := gin.Default()
+
 	router.Use(static.Serve("/", static.LocalFile("./Front-End/Temperature-Monitor/dist", true)))
 
 	//SENSOR ENDPOINTS
@@ -203,6 +206,7 @@ func main() {
 	router.GET("/api/recent", GetRecentScan)
 
 	router.DELETE("/api/:name", DeleteSensor)
+	log.Fatal(autotls.Run(router))
 	router.Run()
 }
 
