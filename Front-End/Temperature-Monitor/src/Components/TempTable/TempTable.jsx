@@ -10,13 +10,13 @@ var TABLEBODYHTML;
 function TempTable() {
     
     const [SensorList, setSensorList] = useState([]);
-    
+    CreateTempBlocks()    
     
     useEffect(()=> {
-        setInterval(getRecentData, 10000);
+        setInterval(getRecentData, 30000);
     })
 
-    function CreateTempBlocks(data){
+    function CreateTempBlocks(){
         TABLEBODYHTML = <></>
         if (SensorList.length > 0){
             TABLEBODYHTML = SensorList.map((sensor) =>(
