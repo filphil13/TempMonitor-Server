@@ -10,11 +10,9 @@ var TABLEBODYHTML;
 function TempTable() {
     
     const [SensorList, setSensorList] = useState([]);
-    CreateTempBlocks()    
+    CreateTempBlocks()
+    setInterval(getRecentData, 30000);
     
-    useEffect(()=> {
-        setInterval(getRecentData, 30000);
-    })
 
     function CreateTempBlocks(){
         TABLEBODYHTML = <></>
@@ -48,7 +46,7 @@ function TempTable() {
 
             // check for error response
             if (!response.ok) {
-                // get error message from body or default to response statusText
+                // get error message from body` or default to response statusText
                 const error = (names && names.message) || response.statusText;
                 return Promise.reject(error);
             }
