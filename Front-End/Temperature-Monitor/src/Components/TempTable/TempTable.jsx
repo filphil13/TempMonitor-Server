@@ -10,9 +10,42 @@ var TABLEBODYHTML;
 function TempTable() {
     
     const [SensorList, setSensorList] = useState([]);
-    getRecentData()
-    setTimeout(getRecentData,
-        10000);
+    
+    useEffect(() => 
+    {
+        const recentSensorData = [];
+        fetch(API_URL + "/api/names")
+        .then(async response => {
+            const names = await response.json();
+
+            // check for error response
+            if (!response.ok) {
+                // get error message from body` or default to response statusText
+                const error = (names && names.message) || response.statusText;
+                return Promise.reject(error);
+            }
+            else if(names==[]){
+                return 
+            }
+            console.log(names)
+            names.forEach(name  => {
+                fetch(API_URL+ "/api/recent/?name="+ name)
+                .then(async response => {
+                    const data = await response.json();
+
+                    // check for error response
+                    if (!response.ok) {
+                        // get error message from body or default to response statusText
+                        const error = (data && data.message) || response.statusText;
+                        return Promise.reject(error);
+                    }
+                    console.log(data)
+                    recentSensorData.push(data)
+                });
+            })
+            setSensorList(recentSensorData);
+        });
+    })
 
     function CreateTempBlocks(){
         TABLEBODYHTML = <></>
