@@ -10,15 +10,18 @@ var TABLEBODYHTML;
 function TempTable() {
     
     const [SensorList, setSensorList] = useState([]);
+    getRecentData()
     CreateTempBlocks()
     setInterval(getRecentData, 30000);
     
-
+    useEffect(()=> {
+        CreateTempBlocks()
+    })
     function CreateTempBlocks(){
         TABLEBODYHTML = <></>
         if (SensorList.length > 0){
             TABLEBODYHTML = SensorList.map((sensor) =>(
-                <tr key={sensor.name} class="border-b border-gray-200 dark:border-gray-700">
+                <tr key={sensor.Name} class="border-b border-gray-200 dark:border-gray-700">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
                         {sensor.Name}
                     </th>
@@ -70,7 +73,6 @@ function TempTable() {
                 });
             })
             setSensorList((SensorList) => recentSensorData);
-            CreateTempBlocks()
         });
     }
 
