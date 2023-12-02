@@ -11,11 +11,8 @@ function TempTable() {
     
     const [SensorList, setSensorList] = useState([]);
     getRecentData()
-    
-    useEffect(()=> {
-        setTimeout(getRecentData,
-                    10000);
-    })
+    setTimeout(getRecentData,
+        10000);
 
     function CreateTempBlocks(){
         TABLEBODYHTML = <></>
