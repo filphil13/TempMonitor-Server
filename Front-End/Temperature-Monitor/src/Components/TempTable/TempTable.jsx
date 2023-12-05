@@ -29,10 +29,10 @@ function TempTable() {
             // check for error response
             if (!response.ok) {
                 // get error message from body` or default to response statusText
-                const error = (names && names.message) || response.statusText;
+                const error = (data && data.message) || response.statusText;
                 return Promise.reject(error);
             }
-            else if(names==[]){
+            else if(data==[]){
                 return 
             }
             setSensorList((SensorList) => recentSensorData);
