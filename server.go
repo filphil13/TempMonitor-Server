@@ -88,6 +88,9 @@ func GetAllTempScans(c *gin.Context) {
 // GET MOST RECENT TEMPERATURE SCANS FROM ALL SENSORS("/sensor/recent")
 func GetRecentScan(c *gin.Context) {
 	name := c.Query("name")
+	if name == "" {
+		GetAllRecentScans(c)
+	}
 
 	i, sensorExists := FindSensorName(name)
 	if !sensorExists {
@@ -100,6 +103,20 @@ func GetRecentScan(c *gin.Context) {
 		Humidity:    sensorList[i].Log[len(sensorList[i].Log)-1].Humidity,
 		Time:        sensorList[i].Log[len(sensorList[i].Log)-1].Time,
 	})
+}
+
+func GetAllRecentScans(c *gin.Context) {
+	var recentSensorList []RecentScan
+	for _, sensor := range sensorList {
+		scan := RecentScan{
+			Name:        sensor.Name,
+			Temperature: sensor.Log[len(sensor.Log)-1].Temperature,
+			Humidity:    sensor.Log[len(sensor.Log)-1].Humidity,
+			Time:        sensor.Log[len(sensor.Log)-1].Time,
+		}
+		recentSensorList = append(recentSensorList, scan)
+	}
+	c.JSON(200, recentSensorList)
 }
 
 // GET SINGLE SENSOR LOG("/sensor/:name")

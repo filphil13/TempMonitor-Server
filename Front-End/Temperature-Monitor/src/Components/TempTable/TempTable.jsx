@@ -13,10 +13,18 @@ function TempTable() {
     
     useEffect(() => 
     {
+        setInterval(() => {
+            getRecentData()
+        }, 10000);
+    })
+
+
+    function getRecentData(){
+
         const recentSensorData = [];
-        fetch(API_URL + "/api/names")
+        fetch(API_URL + "/api/recent")
         .then(async response => {
-            const names = await response.json();
+            const data = await response.json();
 
             // check for error response
             if (!response.ok) {
@@ -27,31 +35,13 @@ function TempTable() {
             else if(names==[]){
                 return 
             }
-            console.log(names)
-            names.forEach(name  => {
-                fetch(API_URL+ "/api/recent/?name="+ name)
-                .then(async response => {
-                    const data = await response.json();
-
-                    // check for error response
-                    if (!response.ok) {
-                        // get error message from body or default to response statusText
-                        const error = (data && data.message) || response.statusText;
-                        return Promise.reject(error);
-                    }
-                    console.log(data)
-                    recentSensorData.push(data)
-                });
-            })
-            setSensorList(recentSensorData);
+            setSensorList((SensorList) => recentSensorData);
         });
-    })
 
-    function CreateTempBlocks(){
         TABLEBODYHTML = <></>
         if (SensorList.length > 0){
             TABLEBODYHTML = SensorList.map((sensor) =>(
-                <tr key={sensor.Name} class="border-b border-gray-200 dark:border-gray-700">
+                <tr key={sensor.name} class="border-b border-gray-200 dark:border-gray-700">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
                         {sensor.Name}
                     </th>
@@ -66,45 +56,7 @@ function TempTable() {
                     </td>
                 </tr>
             ));
-            return TABLEBODYHTML
         }
-    
-    }
-
-    function getRecentData(){
-
-        const recentSensorData = [];
-        fetch(API_URL + "/api/names")
-        .then(async response => {
-            const names = await response.json();
-
-            // check for error response
-            if (!response.ok) {
-                // get error message from body` or default to response statusText
-                const error = (names && names.message) || response.statusText;
-                return Promise.reject(error);
-            }
-            else if(names==[]){
-                return 
-            }
-            console.log(names)
-            names.forEach(name  => {
-                fetch(API_URL+ "/api/recent/?name="+ name)
-                .then(async response => {
-                    const data = await response.json();
-
-                    // check for error response
-                    if (!response.ok) {
-                        // get error message from body or default to response statusText
-                        const error = (data && data.message) || response.statusText;
-                        return Promise.reject(error);
-                    }
-                    console.log(data)
-                    recentSensorData.push(data)
-                });
-            })
-            setSensorList((SensorList) => recentSensorData);
-        });
     }
 
 	return(	
@@ -127,7 +79,7 @@ function TempTable() {
                     </tr>
                 </thead>
                 <tbody>
-                    {CreateTempBlocks()}
+                    {TABLEBODYHTML}
                 </tbody>
             </table>
         </div>
