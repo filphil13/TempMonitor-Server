@@ -6,11 +6,11 @@ const API_URL = "https://temp-monitor-a38f32c02c5e.herokuapp.com"
 
 
 
-var sensorList = [];
 
 function TempTable() {
     
-    const [TableBodyHTML, setTableBodyHTML] = useState("");
+    var sensorList = [];
+    const [TableBodyHTML, setTableBodyHTML] = useState(<></>);
 
 
     useEffect(() => 
@@ -38,6 +38,7 @@ function TempTable() {
                 return 
             }
             sensorList = recentSensorData;
+            console.log(sensorList)
         });
 
         var TABLEBODYHTML = <></>
