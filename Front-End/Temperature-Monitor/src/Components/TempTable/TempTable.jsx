@@ -82,7 +82,7 @@ function TempTable() {
                     </tr>
                 </thead>
                 <tbody>
-                    {TABLEBODYHTML}
+                    {TableBodyHTML}
                 </tbody>
             </table>
         </div>
