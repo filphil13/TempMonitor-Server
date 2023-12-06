@@ -23,7 +23,6 @@ function TempTable() {
 
     function getRecentData(){
 
-        const recentSensorData = [];
         fetch(API_URL + "/api/recent")
         .then(async response => {
             const data = await response.json();
@@ -38,7 +37,7 @@ function TempTable() {
                 return 
             }
             console.log(data)
-            sensorList = recentSensorData;
+            sensorList = data;
             console.log(sensorList)
         });
 
