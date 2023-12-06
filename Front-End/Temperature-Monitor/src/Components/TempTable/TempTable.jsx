@@ -5,7 +5,7 @@ const API_URL = "https://temp-monitor-a38f32c02c5e.herokuapp.com"
 
 
 
-var SensorList;
+var sensorList;
 
 function TempTable() {
     
