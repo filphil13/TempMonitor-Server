@@ -37,6 +37,7 @@ function TempTable() {
             else if(data==[]){
                 return 
             }
+            console.log(data)
             sensorList = recentSensorData;
             console.log(sensorList)
         });
