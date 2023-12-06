@@ -1,3 +1,4 @@
+import { Table } from 'flowbite-react';
 import React, { Component } from 'react';
 import {useState, useEffect} from 'react';
 
@@ -9,7 +10,6 @@ var sensorList;
 
 function TempTable() {
     
-    const [SensorList, setSensorList] = useState([]);
     const [TableBodyHTML, setTableBodyHTML] = useState("");
 
 
@@ -42,7 +42,7 @@ function TempTable() {
 
         var TABLEBODYHTML = <></>
         if (SensorList.length > 0){
-            TABLEBODYHTML = SensorList.map((sensor) =>(
+            TABLEBODYHTML = sensorList.map((sensor) =>(
                 <tr key={sensor.name} class="border-b border-gray-200 dark:border-gray-700">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
                         {sensor.Name}
@@ -60,6 +60,7 @@ function TempTable() {
             ));
         }
         setTableBodyHTML(TableBodyHTML)
+        console.log(TableBodyHTML)
     }
 
 	return(	
