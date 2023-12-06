@@ -10,6 +10,7 @@ const API_URL = "https://temp-monitor-a38f32c02c5e.herokuapp.com"
 function TempTable() {
     
     const [TableBodyHTML, setTableBodyHTML] = useState(<></>);
+    const [sensorList, setsensorList] = useState([])
     getRecentData()
 
     useEffect(() => 
@@ -21,7 +22,6 @@ function TempTable() {
 
 
     function getRecentData(){
-        var sensorList = [];
 
         fetch(API_URL + "/api/recent")
         .then(async response => {
@@ -36,7 +36,7 @@ function TempTable() {
             else if(data==[]){
                 return 
             }
-            sensorList = data;
+            setsensorList(data);
             console.log(sensorList)
         });
 
