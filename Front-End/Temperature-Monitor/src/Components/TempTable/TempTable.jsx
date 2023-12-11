@@ -1,90 +1,85 @@
-import React, { Component } from 'react';
-import {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 
-const API_URL = "https://temp-monitor-a38f32c02c5e.herokuapp.com"
-
-
-
+const API_URL = "https://temp-monitor-a38f32c02c5e.herokuapp.com";
 
 function TempTable() {
-    
     const [sensorList, setSensorList] = useState([]);
-    getRecentData()
 
-    useEffect(() => 
-    {
-        setInterval(() => {
-            getRecentData()
-        }, 10000);
-    })
+    useEffect(() => {
+        // Fetch recent data every 3 seconds
+        const interval = setInterval(() => {
+            getRecentData();
+        }, 3000);
 
+        // Clean up the interval on component unmount
+        return () => clearInterval(interval);
+    }, []);
 
-    function getRecentData(){
-        var sensorList = [];
-
+    function getRecentData() {
         fetch(API_URL + "/api/recent")
-        .then(async response => {
-            const data = await response.json();
+            .then(async response => {
+                const data = await response.json();
 
-            // check for error response
-            if (!response.ok) {
-                // get error message from body` or default to response statusText
-                const error = (data && data.message) || response.statusText;
-                return Promise.reject(error);
-            }
-            else if(data==[]){
-                return 
-            }
-            console.log(sensorList)
-            setSensorList(data)
-            console.log(sensorList)
-        });
+                // Check for error response
+                if (!response.ok) {
+                    // Get error message from body or default to response statusText
+                    const error = (data && data.message) || response.statusText;
+                    return Promise.reject(error);
+                } else if (data.length === 0) {
+                    return;
+                }
 
+                setSensorList(data);
+            });
     }
 
-	return(	
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase dark:text-gray-400">
+    return (
+        <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
                     <tr>
-                        <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        <th scope="col" className="px-6 py-3 bg-gray-50 dark:bg-gray-800">
                             Name
                         </th>
-                        <th scope="col" class="px-6 py-3">
+                        <th scope="col" className="px-6 py-3">
                             Temperature
                         </th>
-                        <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        <th scope="col" className="px-6 py-3 bg-gray-50 dark:bg-gray-800">
                             Humidity
                         </th>
-                        <th scope="col" class="px-6 py-3">
+                        <th scope="col" className="px-6 py-3">
                             Time
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    {
-                        sensorList.map((sensor) =>(
-                            <tr key={sensor.Name} class="border-b border-gray-200 dark:border-gray-700">
-                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
-                                    {sensor.Name}
+                    {   
+                        sensorList.length < 1 ? (
+                            <tr className="border-b border-gray-200 dark:border-gray-700">
+                                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
+                                    No sensors found
                                 </th>
-                                <td class="px-6 py-4">
-                                    {String(sensor.Temperature)}
-                                </td>
-                                <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                                    {String(sensor.Humidity)}
-                                </td>
-                                <td class="px-6 py-4">
-                                    {String(sensor.Time)} seconds ago
-                                </td>
                             </tr>
-                        ))
+                        ) : (
+                            sensorList.map((sensor) => (
+                                <tr key={sensor.Name} className="border-b border-gray-200 dark:border-gray-700">
+                                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
+                                        {sensor.Name}
+                                    </th>
+                                    <td className="px-6 py-4">
+                                        {String(sensor.Temperature)}
+                                    </td>
+                                    <td className="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                                        {String(sensor.Humidity)}
+                                    </td>
+                                </tr>
+                            ))
+                        )
                     }
                 </tbody>
             </table>
         </div>
-
     );
 }
- 
+
 export default TempTable;

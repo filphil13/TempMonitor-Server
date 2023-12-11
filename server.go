@@ -10,86 +10,63 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Global Variables
+// Sensor represents a temperature sensor
+type Sensor struct {
+	Name    string     `json:"Name"`
+	Address string     `json:"Address"`
+	Log     []TempScan `json:"Log"`
+}
+
+// TempScan represents a temperature scan
+type TempScan struct {
+	Temperature float32 `json:"Temperature"`
+	Humidity    float32 `json:"Humidity"`
+	Time        int     `json:"Time"`
+}
+
+// RecentScan represents the most recent temperature scan
+type RecentScan struct {
+	Name        string  `json:"Name"`
+	Temperature float32 `json:"Temperature"`
+	Humidity    float32 `json:"Humidity"`
+	Time        int     `json:"Time"`
+}
+
 var sensorList []Sensor
 
-type Sensor struct {
-	Name    string     `json: "Name"`
-	Address string     `json: "Address"`
-	Log     []TempScan `json: "Log"`
-}
-
-type TempScan struct {
-	Temperature float32 `json: "Temperature"`
-	Humidity    float32 `json: "Humidity"`
-	Time        int     `json: "Time"`
-}
-
-type RecentScan struct {
-	Name        string  `json: "Name"`
-	Temperature float32 `json: "Temperature"`
-	Humidity    float32 `json: "Humidity"`
-	Time        int     `json: "Time"`
-}
-
-//
-//
-//
-
-// CREATE
+// createSensor creates a new sensor and adds it to the sensor list
 func createSensor(name, address string) {
 	newSensor := Sensor{
 		Name:    name,
 		Address: address,
-		Log:     nil}
+		Log:     nil,
+	}
 
 	sensorList = append(sensorList, newSensor)
 }
 
-//
-//
-//
-//
-//
-
-//Logging
-//
-//
-//
-//
-
+// LogTempData logs the sensor list to a JSON file
 func LogTempData() {
 	file, _ := json.Marshal(sensorList)
 	_ = ioutil.WriteFile("log.json", file, 0644)
 }
 
-//
-//
-//
-//
-//
-
-//HANDLER FUNCTIONS
-//
-//
-//
-//
-
-// GET HOME PAGE("/home")
+// GetHome handles the home page request
 func GetHome(c *gin.Context) {
-	c.JSON(200, nil)
+	c.JSON(http.StatusOK, nil)
 }
 
-// GET ALL TEMPERATURE SCANS FROM ALL SENSORS STORED IN DATABASE("/sensor/all")
+// GetAllTempScans returns all temperature scans from all sensors stored in the database
 func GetAllTempScans(c *gin.Context) {
-	c.JSON(200, sensorList)
+	c.JSON(http.StatusOK, sensorList)
 }
 
-// GET MOST RECENT TEMPERATURE SCANS FROM ALL SENSORS("/sensor/recent")
+// GetRecentScan returns the most recent temperature scan for a specific sensor
 func GetRecentScan(c *gin.Context) {
 	name := c.Query("name")
 	if name == "" {
 		GetAllRecentScans(c)
+		return
 	}
 
 	i, sensorExists := FindSensorName(name)
@@ -97,7 +74,7 @@ func GetRecentScan(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, RecentScan{
+	c.JSON(http.StatusOK, RecentScan{
 		Name:        name,
 		Temperature: sensorList[i].Log[len(sensorList[i].Log)-1].Temperature,
 		Humidity:    sensorList[i].Log[len(sensorList[i].Log)-1].Humidity,
@@ -105,6 +82,7 @@ func GetRecentScan(c *gin.Context) {
 	})
 }
 
+// GetAllRecentScans returns the most recent temperature scans from all sensors
 func GetAllRecentScans(c *gin.Context) {
 	var recentSensorList []RecentScan
 	for _, sensor := range sensorList {
@@ -116,10 +94,10 @@ func GetAllRecentScans(c *gin.Context) {
 		}
 		recentSensorList = append(recentSensorList, scan)
 	}
-	c.JSON(200, recentSensorList)
+	c.JSON(http.StatusOK, recentSensorList)
 }
 
-// GET SINGLE SENSOR LOG("/sensor/:name")
+// GetSensorLog returns the log of a specific sensor
 func GetSensorLog(c *gin.Context) {
 	name := c.Query("name")
 	if name == "" {
@@ -132,19 +110,19 @@ func GetSensorLog(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, sensorList[i].Log)
+	c.JSON(http.StatusOK, sensorList[i].Log)
 }
 
-// GET SENSOR NAMES
+// GetSensorNames returns the names of all sensors
 func GetSensorNames(c *gin.Context) {
 	var sensorNames []string
 	for _, sensor := range sensorList {
 		sensorNames = append(sensorNames, sensor.Name)
 	}
-	c.JSON(200, sensorNames)
+	c.JSON(http.StatusOK, sensorNames)
 }
 
-// ADD
+// AddToSensorLog adds a new temperature scan to a specific sensor's log
 func AddToSensorLog(c *gin.Context) {
 	name := c.Query("name")
 
@@ -161,11 +139,11 @@ func AddToSensorLog(c *gin.Context) {
 			i, _ = FindSensorName(name)
 		}
 		sensorList[i].Log = append(sensorList[i].Log, newTempScan)
-		c.JSON(200, newTempScan)
+		c.JSON(http.StatusOK, newTempScan)
 	}
 }
 
-// FIND/GET
+// FindSensorName finds a sensor by its name and returns its index in the sensor list
 func FindSensorName(name string) (int, bool) {
 	for i, sensor := range sensorList {
 		if sensor.Name == name {
@@ -175,6 +153,7 @@ func FindSensorName(name string) (int, bool) {
 	return -1, false
 }
 
+// FindSensorAddr finds a sensor by its address and returns its index in the sensor list
 func FindSensorAddr(addr string) (int, bool) {
 	for i, sensor := range sensorList {
 		if sensor.Address == addr {
@@ -184,35 +163,24 @@ func FindSensorAddr(addr string) (int, bool) {
 	return -1, false
 }
 
-// DELETE
+// DeleteSensor deletes a sensor from the sensor list
 func DeleteSensor(c *gin.Context) {
 	name := c.Query("name")
 	i, sensorExists := FindSensorName(name)
-	if !(sensorExists) {
+	if !sensorExists {
 		return
 	}
 	sensorList = append(sensorList[:i], sensorList[i+1:]...)
 	c.String(http.StatusOK, "", name)
-
 }
 
-//
-//
-//
-//
-//
-
-// MAIN FUNCTION
 func main() {
-
 	router := gin.Default()
 
 	router.Use(static.Serve("/", static.LocalFile("./Front-End/Temperature-Monitor/dist", true)))
 
-	//SENSOR ENDPOINTS
 	router.POST("/api/update", AddToSensorLog)
 
-	//FRONT-END ENDPOINTS
 	router.GET("/home", GetHome)
 	router.GET("/", GetHome)
 
@@ -223,9 +191,3 @@ func main() {
 	router.DELETE("/api/:name", DeleteSensor)
 	router.Run()
 }
-
-//
-//
-//
-//
-//
