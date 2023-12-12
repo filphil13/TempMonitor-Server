@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Graph from '../Graph/Graph';
 
 const API_URL = "https://temp-monitor-a38f32c02c5e.herokuapp.com";
 
@@ -14,6 +15,7 @@ function TempTable() {
         // Clean up the interval on component unmount
         return () => clearInterval(interval);
     }, []);
+
 
     function getRecentData() {
         fetch(API_URL + "/api/recent")
@@ -50,6 +52,9 @@ function TempTable() {
                         <th scope="col" className="px-6 py-3">
                             Time
                         </th>
+                        <th scope="col" className="px-6 py-3">
+                            Graph
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -73,6 +78,9 @@ function TempTable() {
                                 </td>
                                 <td className="px-6 py-4">
                                     {String(Math.floor(Date.now() / 1000) - sensor.Time)} seconds ago
+                                </td>
+                                <td className="px-6 py-4">
+                                    <Graph sensorData={sensor} />
                                 </td>
                             </tr>
                         ))
