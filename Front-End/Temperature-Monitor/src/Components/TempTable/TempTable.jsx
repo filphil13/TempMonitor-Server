@@ -38,16 +38,16 @@ function TempTable() {
             <div className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                 <div className="text-xs text-gray-700 uppercase dark:text-gray-400">
                     <div className="flex flex-wrap border-b border-gray-200 dark:border-gray-700">
-                        <div className="w-full px-6 py-3 bg-gray-50 dark:bg-gray-800 sm:w-auto sm:border-r">
+                        <div className="w-full px-6 py-3 bg-gray-50 dark:bg-gray-800 sm:w-auto sm:border-r md:w-1/4">
                             Name
                         </div>
-                        <div className="w-full px-6 py-3 sm:w-auto sm:border-r">
+                        <div className="w-full px-6 py-3 sm:w-auto sm:border-r md:w-1/4">
                             Temperature
                         </div>
-                        <div className="w-full px-6 py-3 bg-gray-50 dark:bg-gray-800 sm:w-auto sm:border-r">
+                        <div className="w-full px-6 py-3 bg-gray-50 dark:bg-gray-800 sm:w-auto sm:border-r md:w-1/4">
                             Humidity
                         </div>
-                        <div className="w-full px-6 py-3 sm:w-auto">
+                        <div className="w-full px-6 py-3 sm:w-auto md:w-1/4">
                             Time
                         </div>
                     </div>
