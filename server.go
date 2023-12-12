@@ -153,6 +153,15 @@ func FindSensorName(name string) (int, bool) {
 	return -1, false
 }
 
+// GetAllSensorLogs returns a JSON list of all sensor logs
+func GetAllSensorLogs(c *gin.Context) {
+	var sensorLogs []TempScan
+	for _, sensor := range sensorList {
+		sensorLogs = append(sensorLogs, sensor.Log...)
+	}
+	c.JSON(http.StatusOK, sensorLogs)
+}
+
 // FindSensorAddr finds a sensor by its address and returns its index in the sensor list
 func FindSensorAddr(addr string) (int, bool) {
 	for i, sensor := range sensorList {

@@ -18,7 +18,7 @@ const Graph = ({ sensorData }) => {
                     {
                         type: 'line',
                         label: 'Temperature',
-                        data: sensorData.Log.map(data => data.Temperature),
+                        data: sensorData.map(data => data.Temperature),
                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
                         borderColor: 'rgba(75, 192, 192, 1)',
                         borderWidth: 1,
@@ -26,7 +26,7 @@ const Graph = ({ sensorData }) => {
                     {
                         type: 'line',
                         label: 'Humidity',
-                        data: sensorData.Log.map(data => data.Humidity),
+                        data: sensorData.map(data => data.Humidity),
                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
                         borderColor: 'rgba(75, 192, 192, 1)',
                         borderWidth: 1,
