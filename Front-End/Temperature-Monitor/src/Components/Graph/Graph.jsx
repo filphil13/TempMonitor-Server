@@ -9,7 +9,7 @@ const Graph = ({ sensorData }) => {
         new Chart(ctx, {
             type: 'line',
             data: {
-                labels: sensorData.Log.map(data => data.date),
+                labels: sensorData.Log.map(data => data.Time),
                 datasets: [
                     {
                         type: 'line',
