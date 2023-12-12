@@ -61,16 +61,16 @@ function TempTable() {
                 ) : (
                     sensorList.map((sensor) => (
                         <div key={sensor.Name} className="flex flex-wrap border-b border-gray-200 dark:border-gray-700">
-                            <div className="w-full px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 sm:w-auto sm:border-r">
+                            <div className="w-full px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 sm:w-auto sm:border-r md:w-1/4">
                                 {sensor.Name}
                             </div>
-                            <div className="w-full px-6 py-4 sm:w-auto sm:border-r">
+                            <div className="w-full px-6 py-4 sm:w-auto sm:border-r md:w-1/4">
                                 {String(sensor.Temperature)}
                             </div>
-                            <div className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-800 sm:w-auto sm:border-r">
+                            <div className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-800 sm:w-auto sm:border-r md:w-1/4">
                                 {String(sensor.Humidity)}
                             </div>
-                            <div className="w-full px-6 py-4 sm:w-auto">
+                            <div className="w-full px-6 py-4 sm:w-auto md:w-1/4">
                                 {sensor.Time}
                             </div>
                         </div>
