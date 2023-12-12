@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Chart } from 'chart.js';
+import { Chart, LinearScale } from 'chart.js'; // Import the LinearScale module
 
 const Graph = ({ sensorName }) => {
     const chartRef = useRef(null);
