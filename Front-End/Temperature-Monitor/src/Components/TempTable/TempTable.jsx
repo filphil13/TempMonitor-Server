@@ -34,50 +34,49 @@ function TempTable() {
     }
 
     return (
-        <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
-                    <tr>
-                        <th scope="col" className="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+        <div className="overflow-x-auto sm:overflow-visible">
+            <div className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <div className="text-xs text-gray-700 uppercase dark:text-gray-400">
+                    <div className="flex flex-wrap border-b border-gray-200 dark:border-gray-700">
+                        <div className="w-full px-6 py-3 bg-gray-50 dark:bg-gray-800 sm:w-auto sm:border-r">
                             Name
-                        </th>
-                        <th scope="col" className="px-6 py-3">
+                        </div>
+                        <div className="w-full px-6 py-3 sm:w-auto sm:border-r">
                             Temperature
-                        </th>
-                        <th scope="col" className="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        </div>
+                        <div className="w-full px-6 py-3 bg-gray-50 dark:bg-gray-800 sm:w-auto sm:border-r">
                             Humidity
-                        </th>
-                        <th scope="col" className="px-6 py-3">
+                        </div>
+                        <div className="w-full px-6 py-3 sm:w-auto">
                             Time
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {   
-                        sensorList.length < 1 ? (
-                            <tr className="border-b border-gray-200 dark:border-gray-700">
-                                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
-                                    No sensors found
-                                </th>
-                            </tr>
-                        ) : (
-                            sensorList.map((sensor) => (
-                                <tr key={sensor.Name} className="border-b border-gray-200 dark:border-gray-700">
-                                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
-                                        {sensor.Name}
-                                    </th>
-                                    <td className="px-6 py-4">
-                                        {String(sensor.Temperature)}
-                                    </td>
-                                    <td className="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                                        {String(sensor.Humidity)}
-                                    </td>
-                                </tr>
-                            ))
-                        )
-                    }
-                </tbody>
-            </table>
+                        </div>
+                    </div>
+                </div>
+                {sensorList.length < 1 ? (
+                    <div className="flex flex-wrap border-b border-gray-200 dark:border-gray-700">
+                        <div className="w-full px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
+                            No sensors found
+                        </div>
+                    </div>
+                ) : (
+                    sensorList.map((sensor) => (
+                        <div key={sensor.Name} className="flex flex-wrap border-b border-gray-200 dark:border-gray-700">
+                            <div className="w-full px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800 sm:w-auto sm:border-r">
+                                {sensor.Name}
+                            </div>
+                            <div className="w-full px-6 py-4 sm:w-auto sm:border-r">
+                                {String(sensor.Temperature)}
+                            </div>
+                            <div className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-800 sm:w-auto sm:border-r">
+                                {String(sensor.Humidity)}
+                            </div>
+                            <div className="w-full px-6 py-4 sm:w-auto">
+                                {sensor.Time}
+                            </div>
+                        </div>
+                    ))
+                )}
+            </div>
         </div>
     );
 }
