@@ -54,27 +54,34 @@ function TempTable() {
                 </thead>
                 <tbody>
                     {   
-                        sensorList.length < 1 ? (
-                            <tr className="border-b border-gray-200 dark:border-gray-700">
-                                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
-                                    No sensors found
-                                </th>
-                            </tr>
-                        ) : (
-                            sensorList.map((sensor) => (
-                                <tr key={sensor.Name} className="border-b border-gray-200 dark:border-gray-700">
+                        if (sensorList.length < 1) {
+                                <tr className="border-b border-gray-200 dark:border-gray-700">
                                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
-                                        {sensor.Name}
+                                        No sensors found
                                     </th>
-                                    <td className="px-6 py-4">
-                                        {String(sensor.Temperature)}
-                                    </td>
-                                    <td className="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                                        {String(sensor.Humidity)}
-                                    </td>
                                 </tr>
-                            ))
-                        )
+                            );
+                        }
+
+                        else{
+                            sensorList.map((sensor) => (
+                            <tr key={sensor.Name} className="border-b border-gray-200 dark:border-gray-700">
+                                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
+                                    {sensor.Name}
+                                </th>
+                                <td className="px-6 py-4">
+                                    {String(sensor.Temperature)}
+                                </td>
+                                <td className="px-6 py-4 bg-gray-50 dark:bg-gray-800">
+                                    {String(sensor.Humidity)}
+                                </td>
+                                <td className="px-6 py-4">
+                                    {String(Math.floor(Date.now() / 1000) - sensor.Time)} seconds ago
+                                </td>
+                            </tr>
+                        ))
+                        }
+                        
                     }
                 </tbody>
             </table>
