@@ -5,7 +5,11 @@ const Graph = ({ sensorData }) => {
     const chartRef = useRef(null);
 
     useEffect(() => {
+        if (!sensorData) {
+            return;
+        }
         const ctx = chartRef.current.getContext('2d');
+
         new Chart(ctx, {
             type: 'line',
             data: {
