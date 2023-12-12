@@ -80,25 +80,7 @@ function TempTable() {
                                     {String(Math.floor(Date.now() / 1000) - sensor.Time)} seconds ago
                                 </td>
                                 <td className="px-6 py-4">
-                                    {
-                                        fetch(API_URL + "/api/all?" + sensor.Name)
-                                            .then(async response => {
-                                                const data = await response.json();
-
-                                                // Check for error response
-                                                if (!response.ok) {
-                                                    // Get error message from body or default to response statusText
-                                                    const error = (data && data.message) || response.statusText;
-                                                    return Promise.reject(error);
-                                                }
-
-                                                return <Graph sensorData={data} />;
-                                            })
-                                            .catch(error => {
-                                                console.error("Error fetching sensor data:", error);
-                                                return null;
-                                            })
-                                    }
+                                    <Graph sensorData={sensor.Name} />
                                 </td>
                             </tr>
                         ))

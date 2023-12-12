@@ -1,24 +1,54 @@
-import React, { useEffect, useRef } from 'react';
-import {Chart} from 'chart.js';
+import React, { useEffect, useRef, useState } from 'react';
+import { Chart } from 'chart.js';
 
-const Graph = ({ sensorData }) => {
+const Graph = ({ sensorName }) => {
     const chartRef = useRef(null);
+    const [tempLog, setTempLog] = useState([]);
 
     useEffect(() => {
-        if (!sensorData) {
-            return;
+        const interval = setInterval(() => {
+            getAllSensorLogs();
+        }, 3000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    useEffect(() => {
+        if (sensorName) {
+            getAllSensorLogs();
         }
+    }, [sensorName]);
+
+
+    const getAllSensorLogs = () => {
+        fetch(API_URL + "/api/all?" + sensorName)
+            .then(async (response) => {
+                const data = await response.json();
+                if (!response.ok) {
+                    const error = (data && data.message) || response.statusText;
+                    return Promise.reject(error);
+                } else if (data.length === 0) {
+                    return;
+                }
+                setTempLog(data);
+            })
+            .catch((error) => {
+                console.error("Error fetching sensor data:", error);
+            });
+    };
+
+    useEffect(() => {
         const ctx = chartRef.current.getContext('2d');
 
         new Chart(ctx, {
             type: 'line',
             data: {
-                labels: sensorData.Log.map(data => data.Time),
+                labels: tempLog.map((data) => data.Time),
                 datasets: [
                     {
                         type: 'line',
                         label: 'Temperature',
-                        data: sensorData.map(data => data.Temperature),
+                        data: tempLog.map((data) => data.Temperature),
                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
                         borderColor: 'rgba(75, 192, 192, 1)',
                         borderWidth: 1,
@@ -26,9 +56,9 @@ const Graph = ({ sensorData }) => {
                     {
                         type: 'line',
                         label: 'Humidity',
-                        data: sensorData.map(data => data.Humidity),
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
+                        data: tempLog.map((data) => data.Humidity),
+                        backgroundColor: 'rgba(192, 75, 75, 0.2)',
+                        borderColor: 'rgba(192, 75, 75, 1)',
                         borderWidth: 1,
                     },
                 ],
@@ -41,7 +71,7 @@ const Graph = ({ sensorData }) => {
                 },
             },
         });
-    }, [sensorData]);
+    }, [tempLog]);
 
     return <canvas ref={chartRef} />;
 };
