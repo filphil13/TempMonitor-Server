@@ -79,9 +79,6 @@ function TempTable() {
                                 <td className="px-6 py-4">
                                     {String(Math.floor(Date.now() / 1000) - sensor.Time)} seconds ago
                                 </td>
-                                <td className="px-6 py-4">
-                                    <Graph sensorData={sensor.Name} />
-                                </td>
                             </tr>
                         ))
                     )}
