@@ -186,9 +186,7 @@ func DeleteSensor(c *gin.Context) {
 
 func main() {
 	router := gin.Default()
-	config := cors.DefaultConfig()
-	config.AllowAllOrigins = true
-	router.Use(cors.New(config))
+	router.Use(cors.Default())
 
 	router.Use(static.Serve("/", static.LocalFile("./Front-End/Temperature-Monitor/dist", true)))
 
