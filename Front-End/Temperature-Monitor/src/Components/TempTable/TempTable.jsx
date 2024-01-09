@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Graph from '../Graph/Graph';
 
 const API_URL = "https://walrus-app-zu4le.ondigitalocean.app";
-
+const PORT = "8080";
 function TempTable() {
     const [sensorList, setSensorList] = useState([]);
 
@@ -18,7 +18,7 @@ function TempTable() {
 
 
     function getRecentData() {
-        fetch(API_URL + "/api/recent")
+        fetch(API_URL + "/api/recent:" + PORT)
             .then(async response => {
                 const data = await response.json();
 
