@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gin-gonic/contrib/cors"
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 )
@@ -185,7 +186,7 @@ func DeleteSensor(c *gin.Context) {
 
 func main() {
 	router := gin.Default()
-
+	router.Use(cors.Default())
 	router.Use(static.Serve("/", static.LocalFile("./Front-End/Temperature-Monitor/dist", true)))
 
 	router.POST("/api/update", AddToSensorLog)
