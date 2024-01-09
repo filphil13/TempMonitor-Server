@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Graph from '../Graph/Graph';
 
-const API_URL = "https://temp-monitor-a38f32c02c5e.herokuapp.com";
+const API_URL = "https://walrus-app-zu4le.ondigitalocean.app";
 
 function TempTable() {
     const [sensorList, setSensorList] = useState([]);
