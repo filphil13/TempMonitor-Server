@@ -6,11 +6,16 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/filphil13/TempMonitor-Server/handlers"
+	"github.com/filphil13/TempMonitor-Server/models"
 )
 
 // Sensor represents a temperature sensor
 
 func main() {
+	db, err := models.ConnectToDB()
+	if db == nil {
+		panic(err)
+	}
 	router := gin.Default()
 	router.Use(cors.Default())
 
