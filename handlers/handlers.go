@@ -94,7 +94,7 @@ func GetSensorNamesHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, sensorNames)
 }
 
-// AddToSensorLog adds a new temperature scan to a specific sensor's log
+// AddToSensorLogHandler adds a new temperature scan to a specific sensor's log
 func AddToSensorLogHandler(c *gin.Context) {
 	// Retrieve the userID from the query parameters
 	userID := c.Query("userID")
@@ -106,16 +106,22 @@ func AddToSensorLogHandler(c *gin.Context) {
 	name := c.Query("name")
 
 	var newTempScan models.TempScan
+	if err := c.ShouldBindJSON(&newTempScan); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	// Check if the sensor exists, if not, create it
 	if _, sensorExists := models.FindSensorName(name, userID); !sensorExists {
 		models.CreateSensor(name, userID, c.ClientIP())
 	}
+
 	// Add the new temperature scan to the sensor's log
 	if models.AddTempScan(name, userID, newTempScan) {
 		c.JSON(http.StatusOK, gin.H{"status": "Temp scan added"})
 		return
 	}
+
 	c.JSON(http.StatusBadRequest, gin.H{"error": "Sensor not found"})
 }
 
