@@ -20,10 +20,9 @@ type RecentScan struct {
 func AddTempScan(name string, userID string, tempScan TempScan) bool {
 	newTempScan := tempScan
 	newTempScan.Time = int(time.Now().Unix())
-	i, _ := FindUserID(userID)
-	sensorList := database.UserList[i].SensorList
-	i, _ = FindSensorName(name, userID)
-	sensorList[i].Log = append(sensorList[i].Log, newTempScan)
+	id, _ := FindUserID(userID)
+	n, _ := FindSensorName(name, userID)
+	database.UserList[id].SensorList[n].Log = append(database.UserList[id].SensorList[n].Log, newTempScan)
 	return true
 }
 
