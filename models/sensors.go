@@ -1,4 +1,3 @@
-// sensor.go
 package models
 
 // Sensor represents a temperature sensor
