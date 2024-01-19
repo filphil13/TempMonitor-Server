@@ -32,7 +32,8 @@ function TempTable() {
                 }
 
                 setSensorList(data);
-            });
+            })
+            .catch(error => console.error('Fetch error:', error));;
     }
 
     return (
