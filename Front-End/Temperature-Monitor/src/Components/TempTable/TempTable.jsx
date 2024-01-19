@@ -5,7 +5,7 @@ const API_URL = "https://oyster-app-rwyik.ondigitalocean.app";
 const PORT = "443";
 function TempTable() {
     const [sensorList, setSensorList] = useState([]);
-
+    getRecentData();
     useEffect(() => {
         // Fetch recent data every 3 seconds
         const interval = setInterval(() => {
