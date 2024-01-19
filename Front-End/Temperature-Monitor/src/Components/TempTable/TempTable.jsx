@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Graph from '../Graph/Graph';
 
 const API_URL = "https://oyster-app-rwyik.ondigitalocean.app";
-const PORT = "8080";
+const PORT = "443";
 function TempTable() {
     const [sensorList, setSensorList] = useState([]);
 
