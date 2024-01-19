@@ -15,6 +15,10 @@ func GetHome(c *gin.Context) {
 // GetAllTempScans returns all temperature scans from all sensors stored in the database
 func GetAllSensorScansHandler(c *gin.Context) {
 	userID := c.Query("userID")
+	if userID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No User ID Provided"})
+		return
+	}
 	sensorList := models.GetSensorList(userID)
 	c.JSON(http.StatusOK, sensorList)
 }
@@ -23,6 +27,10 @@ func GetAllSensorScansHandler(c *gin.Context) {
 func GetRecentScanHandler(c *gin.Context) {
 	name := c.Query("name")
 	userID := c.Query("userID")
+	if userID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No User ID Provided"})
+		return
+	}
 	if name == "" {
 		GetRecentScansHandler(c)
 		return
@@ -35,6 +43,10 @@ func GetRecentScanHandler(c *gin.Context) {
 // GetAllRecentScans returns the most recent temperature scans from all sensors
 func GetRecentScansHandler(c *gin.Context) {
 	userID := c.Query("userID")
+	if userID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No User ID Provided"})
+		return
+	}
 	recentSensorList := models.GetAllRecentScans(userID)
 	c.JSON(http.StatusOK, recentSensorList)
 }
@@ -42,6 +54,10 @@ func GetRecentScansHandler(c *gin.Context) {
 // GetSensorLog returns the log of a specific sensor
 func GetSensorScansHandler(c *gin.Context) {
 	userID := c.Query("userID")
+	if userID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No User ID Provided"})
+		return
+	}
 	name := c.Query("name")
 	if name == "" {
 		GetAllSensorLogsHandler(c)
@@ -56,6 +72,10 @@ func GetSensorScansHandler(c *gin.Context) {
 // GetSensorNames returns the names of all sensors
 func GetSensorNamesHandler(c *gin.Context) {
 	userID := c.Query("userID")
+	if userID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No User ID Provided"})
+		return
+	}
 	sensorNames := models.GetSensorNames(userID)
 	if sensorNames == nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "No Sensors Found"})
@@ -66,6 +86,10 @@ func GetSensorNamesHandler(c *gin.Context) {
 // AddToSensorLog adds a new temperature scan to a specific sensor's log
 func AddToSensorLogHandler(c *gin.Context) {
 	userID := c.Query("userID")
+	if userID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No User ID Provided"})
+		return
+	}
 	name := c.Query("name")
 
 	var newTempScan models.TempScan
@@ -83,6 +107,10 @@ func AddToSensorLogHandler(c *gin.Context) {
 // GetAllSensorLogs returns a JSON list of all sensor logs
 func GetAllSensorLogsHandler(c *gin.Context) {
 	userID := c.Query("userID")
+	if userID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No User ID Provided"})
+		return
+	}
 	sensorLogs := models.GetSensorList(userID)
 	c.JSON(http.StatusOK, sensorLogs)
 }
@@ -103,6 +131,10 @@ func AddUserHandler(c *gin.Context) {
 // DeleteUser deletes a user
 func DeleteUserHandler(c *gin.Context) {
 	userID := c.Param("userID")
+	if userID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No User ID Provided"})
+		return
+	}
 	if models.DeleteUser(userID) {
 		c.JSON(http.StatusOK, gin.H{"status": "User deleted"})
 	} else {
@@ -114,6 +146,10 @@ func DeleteUserHandler(c *gin.Context) {
 
 func DeleteSensorHandler(c *gin.Context) {
 	userID := c.Query("userID")
+	if userID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No User ID Provided"})
+		return
+	}
 	name := c.Query("name")
 	if models.DeleteSensor(name, userID) {
 		c.JSON(http.StatusOK, gin.H{"status": "Sensor deleted"})
