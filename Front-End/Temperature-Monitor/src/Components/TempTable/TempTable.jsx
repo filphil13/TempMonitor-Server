@@ -18,7 +18,7 @@ function TempTable() {
 
 
     function getRecentData() {
-        fetch(API_URL + ":" + PORT + "/api/recent")
+        fetch(API_URL + ":" + PORT + "/api/recent?userID=1")
             .then(async response => {
                 const data = await response.json();
 
