@@ -16,7 +16,7 @@ func CreateUser(userID string, userName string, userEmail string) {
 		UserEmail:  userEmail,
 		SensorList: []Sensor{},
 	}
-	userList = append(userList, newUser)
+	database.UserList = append(userList, newUser)
 }
 
 func DeleteUser(userID string) bool {
@@ -25,7 +25,7 @@ func DeleteUser(userID string) bool {
 	if !userExists {
 		return false
 	}
-	userList = append(userList[:i], userList[i+1:]...)
+	database.UserList = append(userList[:i], userList[i+1:]...)
 	return true
 }
 

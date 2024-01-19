@@ -39,7 +39,7 @@ func CreateSensor(name string, userID string, addr string) {
 		Address: addr,
 		Log:     []TempScan{},
 	}
-	sensorList = append(sensorList, newSensor)
+	database.UserList[i].SensorList = append(sensorList, newSensor)
 }
 
 func DeleteSensor(name string, userID string) bool {
@@ -49,7 +49,7 @@ func DeleteSensor(name string, userID string) bool {
 	if !sensorExists {
 		return false
 	}
-	sensorList = append(sensorList[:i], sensorList[i+1:]...)
+	database.UserList[i].SensorList = append(sensorList[:i], sensorList[i+1:]...)
 	return true
 }
 
