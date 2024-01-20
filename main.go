@@ -10,12 +10,14 @@ import (
 )
 
 // Sensor represents a temperature sensor
-
 func main() {
-	db, err := models.ConnectToDB()
-	if db == nil {
+	err := models.ConnectToDB()
+	if err != nil {
 		panic(err)
 	}
+
+	defer models.DisconnectFromDB()
+
 	router := gin.Default()
 	router.Use(cors.Default())
 
@@ -31,6 +33,6 @@ func main() {
 	router.GET("/api/all", handlers.GetAllSensorScansHandler)
 	router.GET("/api/recent", handlers.GetRecentScanHandler)
 
-	router.DELETE("/api/:name", handlers.DeleteSensorHandler)
+	router.DELETE("/api", handlers.DeleteSensorHandler)
 	router.Run()
 }

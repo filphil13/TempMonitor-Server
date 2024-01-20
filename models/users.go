@@ -1,56 +1,62 @@
 package models
 
+import (
+	"crypto/rand"
+	"encoding/base64"
+)
+
 type User struct {
-	UserID     string   `json:"userid"`
+	ID         int      `json:"userid"`
+	UserToken  string   `json:"usertoken"`
 	UserName   string   `json:"username"`
 	UserEmail  string   `json:"useremail"`
 	Password   string   `json:"password"`
 	SensorList []Sensor `json:"sensorlist"`
 }
 
-func CreateUser(userID string, userName string, userEmail string) {
-	userList := database.UserList
-	newUser := User{
-		UserID:     userID,
-		UserName:   userName,
-		UserEmail:  userEmail,
-		SensorList: []Sensor{},
-	}
-	database.UserList = append(userList, newUser)
+func generateRandomString(length int) string {
+	randomBytes := make([]byte, length)
+	rand.Read(randomBytes)
+	return base64.URLEncoding.EncodeToString(randomBytes)[:length]
 }
 
-func DeleteUser(userID string) bool {
-	userList := database.UserList
-	i, userExists := FindUserID(userID)
-	if !userExists {
+func CreateUser(userName string, userEmail string, password string) bool {
+
+	newUser := User{
+		ID:         0,
+		UserToken:  generateRandomString(50),
+		UserName:   userName,
+		UserEmail:  userEmail,
+		Password:   password,
+		SensorList: []Sensor{},
+	}
+	err := AddUserToDB(database, newUser)
+	if err != nil {
+		println(err.Error())
 		return false
 	}
-	database.UserList = append(userList[:i], userList[i+1:]...)
 	return true
 }
 
-func FindUserID(userID string) (int, bool) {
-	userList := database.UserList
-	for i, user := range userList {
-		if user.UserID == userID {
-			return i, true
-		}
+func DeleteUser(userToken string) bool {
+	err := DeleteUserFromDB(database, userToken)
+	if err != nil {
+		println(err.Error())
+		return false
 	}
-	return -1, false
+	return true
 }
 
-func FindUserEmail(userEmail string) (int, bool) {
-	userList := database.UserList
-	for i, user := range userList {
-		if user.UserEmail == userEmail {
-			return i, true
-		}
+func Login(userEmail string, password string) (string, bool) {
+	dbPassword, err := GetPasswordByUserEmail(database, userEmail)
+	if err != nil {
+		println(err.Error())
+		return "", false
 	}
-	return -1, false
-}
+	if dbPassword != password {
+		return "", false
+	}
 
-func CheckPassword(userEmail string, password string) bool {
-	userList := database.UserList
-	i, _ := FindUserEmail(userEmail)
-	return userList[i].Password == password
+	userToken, err := GetUserTokenByUserEmail(database, userEmail)
+	return userToken, true
 }

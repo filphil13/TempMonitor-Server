@@ -17,71 +17,44 @@ type RecentScan struct {
 	Time        int     `json:"Time"`
 }
 
-func AddTempScan(name string, userID string, tempScan TempScan) bool {
+func AddTempScan(name string, userToken string, tempScan TempScan) bool {
 	newTempScan := tempScan
 	newTempScan.Time = int(time.Now().Unix())
-	id, _ := FindUserID(userID)
-	n, _ := FindSensorName(name, userID)
-	database.UserList[id].SensorList[n].Log = append(database.UserList[id].SensorList[n].Log, newTempScan)
+	err := AddTempScanToDB(database, newTempScan, name, userToken)
+	if err != nil {
+		return false
+	}
 	return true
 }
 
-func GetTempScan(name string, userID string, time int) (TempScan, bool) {
-	i, _ := FindUserID(userID)
-	sensorList := database.UserList[i].SensorList
-	i, _ = FindSensorName(name, userID)
-	for _, scan := range sensorList[i].Log {
-		if scan.Time == time {
-			return scan, true
-		}
+func GetTempScans(name string, userToken string) []TempScan {
+	tempScans, err := GetTempScansFromDB(database, name, userToken)
+	if err != nil {
+		return nil
 	}
-	return TempScan{}, false
+	return tempScans
 }
 
-func GetTempScans(name string, userID string) []TempScan {
-	i, _ := FindUserID(userID)
-	sensorList := database.UserList[i].SensorList
-	i, _ = FindSensorName(name, userID)
-	return sensorList[i].Log
+//func GetAllSensorLogs(userToken string) []RecentScan {
+//allSensorLogs, err := GetAllSensorLogsFromDB(database, userToken)
+//if err != nil {
+//	return nil
+//}
+//return AllSensorLogs
+//}
+
+func GetAllRecentScans(userToken string) []RecentScan {
+	recentScans, err := GetAllRecentScansFromDB(database, userToken)
+	if err != nil {
+		return nil
+	}
+	return recentScans
 }
 
-func DeleteTempScan(name string, userID string, time int) bool {
-	i, _ := FindUserID(userID)
-	sensorList := database.UserList[i].SensorList
-	i, _ = FindSensorName(name, userID)
-	for i, scan := range sensorList[i].Log {
-		if scan.Time == time {
-			sensorList[i].Log = append(sensorList[i].Log[:i], sensorList[i].Log[i+1:]...)
-			return true
-		}
+func GetRecentScan(name string, userToken string) RecentScan {
+	recentScan, err := GetRecentScanFromDB(database, name, userToken)
+	if err != nil {
+		return RecentScan{}
 	}
-	return false
-}
-
-func GetAllRecentScans(userID string) []RecentScan {
-	i, _ := FindUserID(userID)
-	sensorList := database.UserList[i].SensorList
-	var recentSensorList []RecentScan
-	for _, sensor := range sensorList {
-		scan := RecentScan{
-			Name:        sensor.Name,
-			Temperature: sensor.Log[len(sensor.Log)-1].Temperature,
-			Humidity:    sensor.Log[len(sensor.Log)-1].Humidity,
-			Time:        sensor.Log[len(sensor.Log)-1].Time,
-		}
-		recentSensorList = append(recentSensorList, scan)
-	}
-	return recentSensorList
-}
-
-func GetRecentScan(name string, userID string) RecentScan {
-	i, _ := FindUserID(userID)
-	sensorList := database.UserList[i].SensorList
-	i, _ = FindSensorName(name, userID)
-	return RecentScan{
-		Name:        sensorList[i].Name,
-		Temperature: sensorList[i].Log[len(sensorList[i].Log)-1].Temperature,
-		Humidity:    sensorList[i].Log[len(sensorList[i].Log)-1].Humidity,
-		Time:        sensorList[i].Log[len(sensorList[i].Log)-1].Time,
-	}
+	return recentScan
 }
