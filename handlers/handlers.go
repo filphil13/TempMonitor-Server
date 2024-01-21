@@ -101,7 +101,7 @@ func AddToSensorLogHandler(c *gin.Context) {
 		return
 	}
 
-	if models.CheckIfSensorExists(name, userToken) {
+	if !models.CheckIfSensorExists(name, userToken) {
 		err := models.CreateSensor(name, userToken, c.ClientIP())
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
