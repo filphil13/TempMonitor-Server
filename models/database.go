@@ -153,6 +153,14 @@ func DeleteSensorFromDB(db *sql.DB, sensorName string, userToken string) error {
 	return nil
 }
 
+func CheckIfSensorExistsInDB(db *sql.DB, sensorName string, userToken string) bool {
+	sensorID, err := GetSensorIDByName(db, sensorName)
+	if err != nil {
+		return false
+	}
+	return sensorID != -1
+}
+
 func AddTempScanToDB(db *sql.DB, tempScan TempScan, sensorName string, userToken string) error {
 	sensor_id, err := GetSensorIDByName(db, sensorName)
 	if err != nil {

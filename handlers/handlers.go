@@ -96,6 +96,21 @@ func AddToSensorLogHandler(c *gin.Context) {
 	}
 	// Retrieve the name of the sensor from the query parameters
 	name := c.Query("name")
+	if name == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No Sensor Name Provided"})
+		return
+	}
+
+	if models.CheckIfSensorExists(name, userToken) {
+		err := models.CreateSensor(name, userToken, c.ClientIP())
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Sensor already exists"})
+		return
+	}
 
 	var newTempScan models.TempScan
 	if err := c.ShouldBindJSON(&newTempScan); err != nil {

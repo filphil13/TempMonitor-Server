@@ -35,3 +35,7 @@ func GetSensorNames(userToken string) []string {
 	}
 	return sensorNames
 }
+
+func CheckIfSensorExists(name string, userToken string) bool {
+	return CheckIfSensorExistsInDB(database, name, userToken)
+}
