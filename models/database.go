@@ -89,7 +89,7 @@ func CreateTables(db *sql.DB) error {
 		sensor_id       INT REFERENCES sensors(id),
 		temperature     NUMERIC(6,2),
 		humidity        NUMERIC(6,2),
-		timestamp       VARCHAR(50)
+		timestamp       INT
 	)`)
 
 	if err != nil {
