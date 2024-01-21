@@ -107,9 +107,6 @@ func AddToSensorLogHandler(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-	} else {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Sensor already exists"})
-		return
 	}
 
 	var newTempScan models.TempScan
