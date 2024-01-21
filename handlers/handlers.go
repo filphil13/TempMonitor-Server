@@ -211,3 +211,24 @@ func LoginHandler(c *gin.Context) {
 	}
 	c.JSON(http.StatusBadRequest, gin.H{"error": "Login Failed"})
 }
+
+func RegisterHandler(c *gin.Context) {
+	type userRegistration struct {
+		UserName  string `json:"username"`
+		UserEmail string `json:"useremail"`
+		Password  string `json:"password"`
+	}
+	var newUser userRegistration
+
+	if err := c.ShouldBindJSON(&newUser); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error: Could not register user.": err.Error()})
+		return
+	}
+
+	// Create a new user in the models package
+	if models.CreateUser(newUser.UserName, newUser.UserEmail, newUser.Password) {
+		c.JSON(http.StatusOK, gin.H{"status": "User created"})
+		return
+	}
+	c.JSON(http.StatusBadRequest, gin.H{"error": "User already exists"})
+}
