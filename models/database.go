@@ -53,6 +53,7 @@ func ConnectToDB() error {
 	if err != nil {
 		return fmt.Errorf("failed to connect to database: %v", err)
 	}
+	CreateTables(database)
 	return nil
 }
 
