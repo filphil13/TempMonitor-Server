@@ -3,6 +3,7 @@ package models
 import (
 	"database/sql"
 	"fmt"
+	"strconv"
 
 	_ "github.com/lib/pq"
 )
@@ -177,6 +178,22 @@ func AddTempScanToDB(db *sql.DB, tempScan TempScan, sensorName string, userToken
 		VALUES ($1, $2, $3, $4)`
 
 	_, err = db.Exec(query, sensor_id, tempScan.Temperature, tempScan.Humidity, tempScan.Time)
+	if err != nil {
+		return fmt.Errorf("failed to insert temp scan: %v", err)
+	}
+	query = `UPDATE sensors
+		SET temperature = '` + fmt.Sprintf("%f", tempScan.Temperature) + `'
+		WHERE id = ` + strconv.Itoa(sensor_id)
+
+	_, err = db.Exec(query)
+	if err != nil {
+		return fmt.Errorf("failed to insert temp scan: %v", err)
+	}
+	query = `UPDATE sensors
+		SET humidity = '` + fmt.Sprintf("%f", tempScan.Humidity) + `'
+		WHERE id = ` + strconv.Itoa(sensor_id)
+
+	db.Exec(query)
 
 	if err != nil {
 		return fmt.Errorf("failed to insert temp scan: %v", err)
