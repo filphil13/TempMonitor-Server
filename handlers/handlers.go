@@ -161,8 +161,8 @@ func DeleteSensorHandler(c *gin.Context) {
 // LoginHandler handles the login request
 func LoginHandler(c *gin.Context) {
 	type Login struct {
-		UserEmail string `json:"useremail"`
-		Password  string `json:"password"`
+		Email    string `json:"email"`
+		Password string `json:"password"`
 	}
 
 	var user Login
@@ -171,7 +171,7 @@ func LoginHandler(c *gin.Context) {
 		return
 	}
 
-	userToken, success := models.Login(user.UserEmail, user.Password)
+	userToken, success := models.Login(user.Email, user.Password)
 	if success {
 		c.JSON(http.StatusOK, gin.H{"userToken": userToken})
 		return
@@ -181,9 +181,9 @@ func LoginHandler(c *gin.Context) {
 
 func RegisterHandler(c *gin.Context) {
 	type userRegistration struct {
-		UserName  string `json:"username"`
-		UserEmail string `json:"useremail"`
-		Password  string `json:"password"`
+		UserName string `json:"username"`
+		Email    string `json:"email"`
+		Password string `json:"password"`
 	}
 	var newUser userRegistration
 
@@ -193,7 +193,7 @@ func RegisterHandler(c *gin.Context) {
 	}
 
 	// Create a new user in the models package
-	if models.CreateUser(newUser.UserName, newUser.UserEmail, newUser.Password) {
+	if models.CreateUser(newUser.UserName, newUser.Email, newUser.Password) {
 		c.JSON(http.StatusOK, gin.H{"status": "User created"})
 		return
 	}

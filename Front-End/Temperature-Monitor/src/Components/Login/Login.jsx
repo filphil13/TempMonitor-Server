@@ -1,21 +1,51 @@
 import React from 'react';
-import { useState } from 'react';
 
 export default function Login({visible, onClose}){
     
-    const handleOnClose = (e) => {
+    const HandleOnClose = (e) => {
         if (e.target.id === "login-modal") {
             onClose();
         }
     }
     if (!visible) return null;
 
+    const HandleLogin = (e) => {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        fetch("https://oyster-app-rwyik.ondigitalocean.app:443/api/login", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "email": email,
+                "password": password
+            })
+        }).then(async response => {
+            const data = await response.json();
+
+            // Check for error response
+            if (!response.ok) {
+                // Get error message from body or default to response statusText
+                const error = (data && data.message) || response.statusText;
+                console.log("Unable to Log in")
+                return Promise.reject(error);
+            }
+            console.log(data);
+            console.log("Logged in")
+
+        }
+        ).catch(error => console.error('Fetch error:', error));;
+
+
+    }
     return (
         <>
             <div 
                 className="mx-auto fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center"
                 id='login-modal'
-                onClick={handleOnClose}
+                onClick={HandleOnClose}
             >
             <div
             className="bg-white shadow-md border border-gray-200 rounded-lg max-w-sm p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700">
@@ -41,7 +71,7 @@ export default function Login({visible, onClose}){
                                 <a href="#" className="text-sm text-blue-700 hover:underline ml-auto dark:text-blue-500">Lost
                                     Password?</a>
                             </div>
-                            <button type="submit" className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Login to your account</button>
+                            <button type="submit" onClick={HandleLogin} className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Login to your account</button>
                             <div className="text-sm font-medium text-gray-500 dark:text-gray-300">
                                 Not registered? <a href="#" className="text-blue-700 hover:underline dark:text-blue-500">Create
                                     account</a>
