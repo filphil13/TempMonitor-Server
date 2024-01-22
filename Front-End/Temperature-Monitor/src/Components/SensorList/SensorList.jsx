@@ -5,13 +5,12 @@ const API_URL = "https://oyster-app-rwyik.ondigitalocean.app";
 const PORT = "443";
 function SensorList() {
     const [sensorList, setSensorList] = useState([]);
-    getSensorData();
     
     useEffect(() => {
         // Fetch recent data every 3 seconds
         const interval = setInterval(() => {
             getSensorData();
-        }, 30000);
+        }, 3000);
 
         // Clean up the interval on component unmount
         return () => clearInterval(interval);
