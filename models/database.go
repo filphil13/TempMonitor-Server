@@ -61,6 +61,9 @@ func DisconnectFromDB() {
 	database.Close()
 }
 
+func GetDatabase() *sql.DB {
+	return database
+}
 func CreateTables(db *sql.DB) error {
 	_, err := db.Exec(`CREATE TABLE IF NOT EXISTS users (
 		id          SERIAL PRIMARY KEY, 
@@ -79,6 +82,8 @@ func CreateTables(db *sql.DB) error {
 		id          SERIAL PRIMARY KEY,
 		user_id     SERIAL REFERENCES users(id),
 		name        VARCHAR(50),
+		temperature NUMERIC(6,2),
+		humidity    NUMERIC(6,2),
 		address     VARCHAR(50),
 		status      VARCHAR(50)  
 	)`)
@@ -185,7 +190,7 @@ func GetTempScansFromDB(db *sql.DB, sensorName string, userToken string) ([]Temp
 		return nil, fmt.Errorf("failed to get sensor ID: %v", err)
 	}
 
-	rows, err := db.Query("SELECT temperature, humidity, timestamp FROM sensor_logs WHERE sensor_id = $1", sensorID)
+	rows, err := db.Query("SELECT temperature, humidity, timestamp FROM sensor_logs WHERE sensor_id = $1 ORDER BY timestamp DESC LIMIT 100 ", sensorID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get temp scans: %v", err)
 	}
@@ -202,65 +207,27 @@ func GetTempScansFromDB(db *sql.DB, sensorName string, userToken string) ([]Temp
 	return tempScans, nil
 }
 
-// dunno if works
-func GetAllSensorLogsFromDB(db *sql.DB, userToken string) ([]RecentScan, error) {
+func GetSensorsDataFromDB(db *sql.DB, userToken string) ([]Sensor, error) {
 	userID, err := GetUserIDByToken(db, userToken)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get user ID: %v", err)
 	}
 
-	rows, err := db.Query("SELECT name, temperature, humidity, timestamp FROM sensor_logs INNER JOIN sensors ON sensor_logs.sensor_id = sensors.id WHERE sensors.user_id = $1 ORDER BY timestamp DESC", userID)
+	rows, err := db.Query("SELECT name, temperature, humidity , status FROM sensors WHERE user_id = $1", userID)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get all sensor logs: %v", err)
+		return nil, fmt.Errorf("failed to get sensors data: %v", err)
 	}
 	defer rows.Close()
 
-	var allSensorLogs []RecentScan
+	var sensors []Sensor
 	for rows.Next() {
-		var recentScan RecentScan
-		if err := rows.Scan(&recentScan.Name, &recentScan.Temperature, &recentScan.Humidity, &recentScan.Time); err != nil {
-			return nil, fmt.Errorf("failed to scan recent scan: %v", err)
+		var sensor Sensor
+		if err := rows.Scan(&sensor.Name, &sensor.Temperature, &sensor.Humidity, &sensor.Address, &sensor.Status); err != nil {
+			return nil, fmt.Errorf("failed to scan sensor: %v", err)
 		}
-		allSensorLogs = append(allSensorLogs, recentScan)
+		sensors = append(sensors, sensor)
 	}
-	return allSensorLogs, nil
-}
-
-func GetRecentScanFromDB(db *sql.DB, sensorName string, userToken string) (RecentScan, error) {
-	sensorID, err := GetSensorIDByName(db, sensorName)
-	if err != nil {
-		return RecentScan{}, fmt.Errorf("failed to get sensor ID: %v", err)
-	}
-
-	var recentScan RecentScan
-	err = db.QueryRow("SELECT temperature, humidity, timestamp FROM sensor_logs WHERE sensor_id = $1 ORDER BY timestamp DESC LIMIT 1", sensorID).Scan(&recentScan.Temperature, &recentScan.Humidity, &recentScan.Time)
-	if err != nil {
-		return RecentScan{}, fmt.Errorf("failed to get recent scan: %v", err)
-	}
-	return recentScan, nil
-}
-
-func GetAllRecentScansFromDB(db *sql.DB, userToken string) ([]RecentScan, error) {
-	userID, err := GetUserIDByToken(db, userToken)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get user ID: %v", err)
-	}
-
-	rows, err := db.Query("SELECT name, temperature, humidity, timestamp FROM sensor_logs INNER JOIN sensors ON sensor_logs.sensor_id = sensors.id WHERE sensors.user_id = $1 ORDER BY timestamp DESC", userID)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get recent scans: %v", err)
-	}
-	defer rows.Close()
-
-	var recentScans []RecentScan
-	for rows.Next() {
-		var recentScan RecentScan
-		if err := rows.Scan(&recentScan.Name, &recentScan.Temperature, &recentScan.Humidity, &recentScan.Time); err != nil {
-			return nil, fmt.Errorf("failed to scan recent scan: %v", err)
-		}
-		recentScans = append(recentScans, recentScan)
-	}
-	return recentScans, nil
+	return sensors, nil
 }
 
 func GetSensorNamesFromDB(db *sql.DB, userToken string) ([]string, error) {

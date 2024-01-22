@@ -4,9 +4,11 @@ import "fmt"
 
 // Sensor represents a temperature sensor
 type Sensor struct {
-	Name    string `json:"Name"`
-	Address string `json:"Address"`
-	Status  string `json:"Status"`
+	Name        string  `json:"Name"`
+	Temperature float64 `json:"Temperature"`
+	Humidity    float64 `json:"Humidity"`
+	Address     string  `json:"Address"`
+	Status      string  `json:"Status"`
 }
 
 func CreateSensor(name string, userToken string, addr string) error {
@@ -38,4 +40,12 @@ func GetSensorNames(userToken string) []string {
 
 func CheckIfSensorExists(name string, userToken string) bool {
 	return CheckIfSensorExistsInDB(database, name, userToken)
+}
+
+func GetSensorsData(userToken string) []Sensor {
+	sensors, err := GetSensorsDataFromDB(database, userToken)
+	if err != nil {
+		return nil
+	}
+	return sensors
 }

@@ -1,6 +1,6 @@
 import './App.css'
 import Navbar from './Components/Navbar/Navbar'
-import TempTable from './Components/TempTable/TempTable'
+import SensorList from './Components/SensorList/SensorList'
 
 
 function App() {
@@ -8,7 +8,7 @@ function App() {
 	return (
 		<div>
 			<Navbar />
-			<TempTable />
+			<SensorList />
 		</div>
 		
 	)

@@ -34,27 +34,3 @@ func GetTempScans(name string, userToken string) []TempScan {
 	}
 	return tempScans
 }
-
-//func GetAllSensorLogs(userToken string) []RecentScan {
-//allSensorLogs, err := GetAllSensorLogsFromDB(database, userToken)
-//if err != nil {
-//	return nil
-//}
-//return AllSensorLogs
-//}
-
-func GetAllRecentScans(userToken string) []RecentScan {
-	recentScans, err := GetAllRecentScansFromDB(database, userToken)
-	if err != nil {
-		return nil
-	}
-	return recentScans
-}
-
-func GetRecentScan(name string, userToken string) RecentScan {
-	recentScan, err := GetRecentScanFromDB(database, name, userToken)
-	if err != nil {
-		return RecentScan{}
-	}
-	return recentScan
-}

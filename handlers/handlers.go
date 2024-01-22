@@ -12,43 +12,6 @@ func GetHome(c *gin.Context) {
 	c.JSON(http.StatusOK, nil)
 }
 
-// GetAllTempScans returns all temperature scans from all sensors stored in the database
-func GetAllSensorScansHandler(c *gin.Context) {
-	c.JSON(http.StatusBadRequest, gin.H{"error": "Not implemented"})
-}
-
-// GetRecentScan returns the most recent temperature scan for a specific sensor
-func GetRecentScanHandler(c *gin.Context) {
-	// Retrieve the name and userToken from the query parameters
-	name := c.Query("name")
-	userToken := c.Query("userToken")
-	if userToken == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "No User ID Provided"})
-		return
-	}
-	if name == "" {
-		GetRecentScansHandler(c)
-		return
-	}
-
-	// Get the most recent scan for the specified sensor from the models package
-	recentScan := models.GetRecentScan(name, userToken)
-	c.JSON(http.StatusOK, recentScan)
-}
-
-// GetAllRecentScans returns the most recent temperature scans from all sensors
-func GetRecentScansHandler(c *gin.Context) {
-	// Retrieve the userToken from the query parameters
-	userToken := c.Query("userToken")
-	if userToken == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "No User ID Provided"})
-		return
-	}
-	// Get the list of most recent scans for all sensors from the models package
-	recentSensorList := models.GetAllRecentScans(userToken)
-	c.JSON(http.StatusOK, recentSensorList)
-}
-
 // GetSensorLog returns the log of a specific sensor
 func GetSensorScansHandler(c *gin.Context) {
 	// Retrieve the userToken from the query parameters
@@ -60,7 +23,7 @@ func GetSensorScansHandler(c *gin.Context) {
 	// Retrieve the name of the sensor from the query parameters
 	name := c.Query("name")
 	if name == "" {
-		GetAllSensorLogsHandler(c)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No Sensor Name Provided"})
 		return
 	}
 
@@ -125,15 +88,19 @@ func AddToSensorLogHandler(c *gin.Context) {
 }
 
 // GetAllSensorLogs returns a JSON list of all sensor logs
-func GetAllSensorLogsHandler(c *gin.Context) {
+func GetSensorsDataHandler(c *gin.Context) {
 	// Retrieve the userToken from the query parameters
 	userToken := c.Query("userToken")
 	if userToken == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "No User Token Provided"})
 		return
 	}
-
-	c.JSON(http.StatusNotImplemented, gin.H{"error": "Not implemented"})
+	sensors := models.GetSensorsData(userToken)
+	if sensors == nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No Sensors Found"})
+		return
+	}
+	c.JSON(http.StatusOK, sensors)
 }
 
 // AddUser adds a new user

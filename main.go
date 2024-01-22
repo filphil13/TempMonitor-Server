@@ -25,13 +25,14 @@ func main() {
 
 	router.POST("/api/update", handlers.AddToSensorLogHandler)
 	router.POST("/api/login", handlers.LoginHandler)
+	router.POST("/api/register", handlers.RegisterHandler)
 
 	router.GET("/home", handlers.GetHome)
 	router.GET("/", handlers.GetHome)
 
 	router.GET("/api/names", handlers.GetSensorNamesHandler)
-	router.GET("/api/all", handlers.GetAllSensorScansHandler)
-	router.GET("/api/recent", handlers.GetRecentScanHandler)
+	router.GET("/api/scans", handlers.GetSensorScansHandler)
+	router.GET("/api/sensors", handlers.GetSensorsDataHandler)
 
 	router.DELETE("/api", handlers.DeleteSensorHandler)
 	router.Run()
