@@ -12,7 +12,6 @@ export default function SensorCard({name, temperature, humidity, status, time}){
             <p>{String(temperature)}</p>
             <p>{String(humidity)}</p>
             <p>{String(status)}</p>
-            <p>{String(Math.floor(Date.now() / 1000) - time)} seconds ago</p>
 
         </div>
     );

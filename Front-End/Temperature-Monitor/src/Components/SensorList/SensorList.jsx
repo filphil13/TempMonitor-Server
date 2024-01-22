@@ -49,7 +49,6 @@ function SensorList() {
                                 temperature={sensor.Temperature} 
                                 humidity={sensor.Humidity}
                                 status={sensor.Status}
-                                time={sensor.Time}
                             />
                             </li>
                 ))}
