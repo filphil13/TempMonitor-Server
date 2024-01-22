@@ -239,7 +239,7 @@ func GetSensorsDataFromDB(db *sql.DB, userToken string) ([]Sensor, error) {
 	var sensors []Sensor
 	for rows.Next() {
 		var sensor Sensor
-		if err := rows.Scan(&sensor.Name, &sensor.Temperature, &sensor.Humidity, &sensor.Address, &sensor.Status); err != nil {
+		if err := rows.Scan(&sensor.Name, &sensor.Temperature, &sensor.Humidity, &sensor.Status); err != nil {
 			return nil, fmt.Errorf("failed to scan sensor: %v", err)
 		}
 		sensors = append(sensors, sensor)
